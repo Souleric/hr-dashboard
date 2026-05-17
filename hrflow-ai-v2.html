@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HRflow AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; background: #eef0f7; color: #1a1d2e; font-size: 14px; line-height: 1.5; overflow: hidden; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #dde0ec; border-radius: 4px; }
+
+/* ── TOKENS ── */
+:root {
+  --page-bg: #eef0f7;
+  --white: #ffffff;
+  --card: #ffffff;
+  --border: #e8eaf3;
+  --border2: #d4d7e8;
+  --text1: #1a1d2e;
+  --text2: #6b7194;
+  --text3: #a8adca;
+  --blue: #4361ee;
+  --blue-lt: #eef0fd;
+  --blue-mid: #c5ccf8;
+  --green: #22c55e;
+  --green-lt: #f0fdf4;
+  --amber: #f59e0b;
+  --amber-lt: #fffbeb;
+  --red: #ef4444;
+  --red-lt: #fef2f2;
+  --teal: #14b8a6;
+  --teal-lt: #f0fdfa;
+  --violet: #8b5cf6;
+  --violet-lt: #f5f3ff;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --shadow: 0 1px 3px rgba(60,70,120,0.06), 0 1px 2px rgba(60,70,120,0.04);
+  --shadow-md: 0 4px 12px rgba(60,70,120,0.08), 0 2px 4px rgba(60,70,120,0.04);
+  --mono: 'DM Mono', monospace;
+  --icon-rail: 60px;
+  --sidebar: 220px;
+}
+
+/* ══════════════════════════════
+   LOGIN
+══════════════════════════════ */
+#login-screen {
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--page-bg);
+  display: flex; align-items: center; justify-content: center;
+}
+.login-wrap {
+  display: flex; gap: 0;
+  background: var(--white);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(60,70,120,0.12);
+  overflow: hidden;
+  width: 820px; height: 500px;
+}
+.login-panel {
+  flex: 1; padding: 48px 44px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.login-visual {
+  width: 320px; flex-shrink: 0;
+  background: linear-gradient(135deg, #e8eaff 0%, #f3d4f8 50%, #ffd6e0 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+  position: relative; overflow: hidden;
+}
+.login-visual::before {
+  content: '';
+  position: absolute; width: 260px; height: 260px;
+  background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.visual-icon { width: 72px; height: 72px; border-radius: 20px; background: white; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-md); position: relative; z-index: 1; }
+.visual-icon i { font-size: 36px; color: var(--blue); }
+.visual-tagline { font-size: 18px; font-weight: 600; color: #3730a3; text-align: center; position: relative; z-index: 1; line-height: 1.3; }
+.visual-sub { font-size: 12px; color: #6366f1; text-align: center; position: relative; z-index: 1; }
+.login-logo { display: flex; align-items: center; gap: 9px; margin-bottom: 28px; }
+.logo-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--blue); display: flex; align-items: center; justify-content: center; }
+.logo-mark i { font-size: 17px; color: white; }
+.logo-name { font-size: 17px; font-weight: 700; color: var(--text1); letter-spacing: -0.3px; }
+.logo-name span { color: var(--blue); }
+.login-title { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; margin-bottom: 4px; }
+.login-sub { font-size: 13px; color: var(--text2); margin-bottom: 26px; }
+.role-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 22px; }
+.role-card {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 16px 14px;
+  cursor: pointer; transition: all 0.18s; background: var(--page-bg);
+}
+.role-card:hover { border-color: var(--blue-mid); background: var(--blue-lt); }
+.role-card.selected { border-color: var(--blue); background: var(--blue-lt); }
+.role-card.selected .rc-icon { background: var(--blue); }
+.role-card.selected .rc-icon i { color: white; }
+.rc-icon { width: 34px; height: 34px; border-radius: 9px; background: var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 9px; transition: all 0.18s; }
+.rc-icon i { font-size: 18px; color: var(--text2); }
+.rc-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.rc-desc { font-size: 11px; color: var(--text2); }
+.login-btn {
+  width: 100%; padding: 12px;
+  background: var(--blue); color: white;
+  border: none; border-radius: var(--radius);
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s; letter-spacing: -0.1px;
+}
+.login-btn:hover { background: #3451d1; }
+
+/* ══════════════════════════════
+   APP SHELL
+══════════════════════════════ */
+#app { display: none; height: 100vh; }
+#app.visible { display: flex; flex-direction: column; }
+
+/* ── TOPBAR ── */
+.topbar {
+  height: 54px; flex-shrink: 0;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 20px 0 0;
+  box-shadow: var(--shadow);
+  position: relative; z-index: 10;
+}
+.tb-brand {
+  width: calc(var(--icon-rail) + var(--sidebar));
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 9px;
+  padding-left: 20px;
+}
+.tb-logo-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--blue); display: flex; align-items: center; justify-content: center; }
+.tb-logo-mark i { font-size: 15px; color: white; }
+.tb-logo-name { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; color: var(--text1); }
+.tb-logo-name span { color: var(--blue); }
+.tb-search {
+  flex: 1; max-width: 300px;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--page-bg); border: 1px solid var(--border);
+  border-radius: 9px; padding: 7px 12px; cursor: text;
+  margin: 0 20px;
+}
+.tb-search i { font-size: 16px; color: var(--text3); }
+.tb-search span { font-size: 13px; color: var(--text3); }
+.tb-search kbd { margin-left: auto; font-size: 10px; color: var(--text3); background: var(--border); border-radius: 4px; padding: 1px 5px; font-family: var(--mono); }
+.tb-right { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.tb-icon { width: 32px; height: 32px; border-radius: 9px; border: 1px solid var(--border); background: var(--page-bg); display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: border-color 0.15s; }
+.tb-icon:hover { border-color: var(--border2); }
+.tb-icon i { font-size: 17px; color: var(--text2); }
+.notif-dot { position: absolute; top: 5px; right: 5px; width: 6px; height: 6px; border-radius: 50%; background: var(--red); border: 1.5px solid white; }
+.role-chip { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-right: 4px; }
+.role-chip.admin { background: var(--blue-lt); color: var(--blue); border: 1px solid var(--blue-mid); }
+.role-chip.employee { background: var(--teal-lt); color: var(--teal); border: 1px solid rgba(20,184,166,0.3); }
+.user-btn { display: flex; align-items: center; gap: 8px; padding: 5px 10px 5px 5px; border-radius: 10px; border: 1px solid var(--border); background: var(--page-bg); cursor: pointer; transition: border-color 0.15s; }
+.user-btn:hover { border-color: var(--border2); }
+.u-avatar { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+.u-name { font-size: 12px; font-weight: 600; color: var(--text1); }
+.logout-btn { font-size: 11px; color: var(--text2); background: none; border: none; cursor: pointer; font-family: inherit; padding: 4px 6px; border-radius: 6px; transition: all 0.15s; }
+.logout-btn:hover { background: var(--red-lt); color: var(--red); }
+
+/* ── BODY ── */
+.body { display: flex; flex: 1; overflow: hidden; }
+
+/* ── ICON RAIL ── */
+.icon-rail {
+  width: var(--icon-rail);
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  align-items: center;
+  padding: 14px 0;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.rail-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.15s; color: var(--text3);
+}
+.rail-icon:hover { background: var(--blue-lt); color: var(--blue); }
+.rail-icon.active { background: var(--blue); color: white; }
+.rail-icon i { font-size: 19px; }
+.rail-divider { width: 28px; height: 1px; background: var(--border); margin: 4px 0; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar);
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: 14px 10px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+.sidebar-label { font-size: 10.5px; font-weight: 600; color: var(--text3); letter-spacing: 0.07em; text-transform: uppercase; padding: 4px 8px 8px; }
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border-radius: 9px;
+  cursor: pointer; font-size: 13px; font-weight: 500;
+  color: var(--text2); transition: all 0.15s;
+  margin-bottom: 1px;
+}
+.nav-item:hover { background: var(--page-bg); color: var(--text1); }
+.nav-item.active { background: var(--blue-lt); color: var(--blue); font-weight: 600; }
+.nav-item i { font-size: 17px; flex-shrink: 0; }
+.nav-badge { margin-left: auto; font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 20px; }
+.nb-red { background: var(--red-lt); color: var(--red); }
+.nb-amber { background: var(--amber-lt); color: var(--amber); }
+.sidebar-group { margin-bottom: 18px; }
+
+/* sidebar bottom */
+.sidebar-bottom { margin-top: auto; }
+.trial-card { background: linear-gradient(135deg,#f0f1ff,#fce7ff); border-radius: 12px; padding: 12px; margin-top: 12px; }
+.trial-title { font-size: 12px; font-weight: 600; margin-bottom: 2px; color: var(--text1); }
+.trial-sub { font-size: 11px; color: var(--text2); margin-bottom: 8px; }
+.trial-bar { height: 4px; background: rgba(100,100,180,0.15); border-radius: 2px; overflow: hidden; }
+.trial-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg,#818cf8,#c084fc); width: 60%; }
+
+/* ── MAIN ── */
+.main { flex: 1; overflow-y: auto; padding: 22px 24px; background: var(--page-bg); }
+.page { display: none; animation: fadein 0.2s ease; }
+.page.active { display: block; }
+@keyframes fadein { from { opacity:0; transform: translateY(5px); } to { opacity:1; transform:none; } }
+
+.page-title { font-size: 21px; font-weight: 700; letter-spacing: -0.4px; margin-bottom: 18px; color: var(--text1); }
+
+/* ── STAT CARDS ── */
+.stat-grid { display: grid; gap: 14px; margin-bottom: 20px; }
+.g4 { grid-template-columns: repeat(4,1fr); }
+.g3 { grid-template-columns: repeat(3,1fr); }
+.g2 { grid-template-columns: repeat(2,1fr); }
+.gc32 { grid-template-columns: 2fr 1fr; }
+.gc23 { grid-template-columns: 1fr 1fr 1fr; }
+
+.stat-card {
+  background: var(--card); border-radius: var(--radius-lg);
+  border: 1px solid var(--border); padding: 18px 20px;
+  box-shadow: var(--shadow); transition: box-shadow 0.2s;
+}
+.stat-card:hover { box-shadow: var(--shadow-md); }
+.sc-label { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.sc-value { font-size: 28px; font-weight: 700; letter-spacing: -0.6px; line-height: 1; margin-bottom: 4px; }
+.sc-sub { font-size: 11.5px; color: var(--text2); }
+
+/* ── CARDS ── */
+.card {
+  background: var(--card); border-radius: var(--radius-lg);
+  border: 1px solid var(--border); padding: 20px;
+  box-shadow: var(--shadow); margin-bottom: 16px;
+}
+.card-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.card-title { font-size: 14px; font-weight: 600; color: var(--text1); display: flex; align-items: center; gap: 7px; }
+.card-title i { font-size: 17px; color: var(--text3); }
+.card-action { font-size: 12px; color: var(--blue); cursor: pointer; font-weight: 500; }
+
+/* ── HERO GRADIENT CARD ── */
+.hero-card {
+  background: linear-gradient(135deg,#e8eaff 0%,#f5e8ff 60%,#ffe8f0 100%);
+  border-radius: var(--radius-xl); border: none;
+  padding: 24px; position: relative; overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.hero-card::after {
+  content: '';
+  position: absolute; top: -40px; right: -40px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle,rgba(255,255,255,0.6) 0%,transparent 70%);
+  border-radius: 50%;
+}
+.hero-pct { font-size: 44px; font-weight: 800; letter-spacing: -1.5px; color: #1e1b4b; margin-bottom: 6px; }
+.hero-text { font-size: 13.5px; color: #4338ca; line-height: 1.5; margin-bottom: 14px; }
+.hero-bar-track { height: 8px; background: rgba(100,100,200,0.12); border-radius: 4px; overflow: hidden; }
+.hero-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg,#6366f1,#ec4899); transition: width 0.6s ease; }
+.hero-labels { display: flex; justify-content: space-between; font-size: 11px; color: #6366f1; margin-top: 5px; font-weight: 500; }
+
+/* ── TABLE ── */
+.table { width: 100%; border-collapse: collapse; }
+.table thead th { text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); background: var(--page-bg); }
+.table thead th:first-child { border-radius: 8px 0 0 0; }
+.table thead th:last-child { border-radius: 0 8px 0 0; }
+.table tbody td { padding: 11px 12px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text2); }
+.table tbody td:first-child { color: var(--text1); font-weight: 500; }
+.table tbody tr:last-child td { border-bottom: none; }
+.table tbody tr:hover td { background: var(--page-bg); }
+
+/* ── BADGE ── */
+.badge { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+.bg-green { background: var(--green-lt); color: #16a34a; }
+.bg-amber { background: var(--amber-lt); color: #d97706; }
+.bg-red { background: var(--red-lt); color: var(--red); }
+.bg-blue { background: var(--blue-lt); color: var(--blue); }
+.bg-teal { background: var(--teal-lt); color: var(--teal); }
+.bg-violet { background: var(--violet-lt); color: var(--violet); }
+.bg-gray { background: var(--page-bg); color: var(--text2); border: 1px solid var(--border); }
+
+/* ── AVATAR ── */
+.ava { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.ava-sm { width: 26px; height: 26px; border-radius: 7px; font-size: 9px; }
+.ava-lg { width: 40px; height: 40px; border-radius: 11px; font-size: 14px; }
+
+/* ── ACTIVITY ── */
+.act-item { display: flex; align-items: flex-start; gap: 11px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.act-item:last-child { border-bottom: none; }
+.act-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.act-icon i { font-size: 16px; }
+.act-body { flex: 1; }
+.act-title { font-size: 13px; font-weight: 500; color: var(--text1); margin-bottom: 2px; }
+.act-time { font-size: 11px; color: var(--text3); }
+
+/* ── PROGRESS ── */
+.prog-wrap { margin-bottom: 13px; }
+.prog-meta { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.prog-label { font-size: 12.5px; color: var(--text1); font-weight: 500; }
+.prog-val { font-size: 12px; color: var(--text2); font-family: var(--mono); }
+.prog-bar { height: 6px; background: var(--page-bg); border-radius: 3px; overflow: hidden; border: 1px solid var(--border); }
+.prog-fill { height: 100%; border-radius: 3px; transition: width 0.7s cubic-bezier(.4,0,.2,1); }
+
+/* ── FORM ── */
+.fg { margin-bottom: 13px; }
+.flabel { font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 5px; display: block; }
+.finput, .fselect, .ftextarea {
+  width: 100%; padding: 9px 12px;
+  background: var(--page-bg); border: 1.5px solid var(--border);
+  border-radius: var(--radius); color: var(--text1);
+  font-family: 'Plus Jakarta Sans',sans-serif; font-size: 13px;
+  outline: none; transition: border-color 0.15s;
+}
+.finput:focus,.fselect:focus,.ftextarea:focus { border-color: var(--blue); background: white; }
+.ftextarea { resize: vertical; min-height: 80px; }
+.fselect option { background: white; }
+
+/* ── BUTTONS ── */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius); font-family: 'Plus Jakarta Sans',sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+.btn-primary { background: var(--blue); color: white; }
+.btn-primary:hover { background: #3451d1; }
+.btn-ghost { background: var(--page-bg); color: var(--text2); border: 1.5px solid var(--border); }
+.btn-ghost:hover { border-color: var(--border2); color: var(--text1); }
+.btn-success { background: var(--green-lt); color: #16a34a; border: 1px solid #bbf7d0; }
+.btn-danger { background: var(--red-lt); color: var(--red); border: 1px solid #fecaca; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* ── RESOURCE ITEM ── */
+.res-item { display: flex; align-items: center; gap: 11px; padding: 11px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+.res-item:last-child { border-bottom: none; }
+.res-item:hover .res-name { color: var(--blue); }
+.res-thumb { width: 36px; height: 36px; border-radius: 9px; background: var(--blue-lt); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.res-thumb i { font-size: 18px; color: var(--blue); }
+.res-name { font-size: 13px; font-weight: 500; transition: color 0.15s; margin-bottom: 2px; }
+.res-meta { font-size: 11px; color: var(--text3); }
+.res-arrow { margin-left: auto; font-size: 16px; color: var(--text3); }
+
+/* ── TEMPLATE ITEM ── */
+.tpl-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: var(--radius); border: 1.5px solid var(--border); cursor: pointer; transition: all 0.15s; margin-bottom: 8px; background: var(--page-bg); }
+.tpl-item:hover { border-color: var(--blue); background: var(--blue-lt); }
+.tpl-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--white); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.tpl-icon i { font-size: 19px; color: var(--blue); }
+.tpl-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.tpl-desc { font-size: 11px; color: var(--text3); }
+
+/* ── KPI RING ── */
+.kpi-ring-wrap { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 10px 0 4px; }
+
+/* ══════════════════════════════
+   FLOATING CHAT BUBBLE + POPUP
+══════════════════════════════ */
+
+/* FAB trigger button */
+.chat-fab {
+  position: fixed; bottom: 28px; right: 28px; z-index: 500;
+  width: 54px; height: 54px; border-radius: 50%;
+  background: linear-gradient(135deg, #4361ee, #8b5cf6);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 24px rgba(67,97,238,0.38), 0 2px 8px rgba(67,97,238,0.2);
+  transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s;
+}
+.chat-fab:hover { transform: scale(1.08); box-shadow: 0 8px 30px rgba(67,97,238,0.46); }
+.chat-fab:active { transform: scale(0.96); }
+.chat-fab i { font-size: 24px; color: white; transition: opacity 0.15s, transform 0.15s; }
+.chat-fab .fab-icon-open  { position: absolute; opacity: 1; transform: scale(1) rotate(0deg); }
+.chat-fab .fab-icon-close { position: absolute; opacity: 0; transform: scale(0.6) rotate(-90deg); }
+.chat-fab.open .fab-icon-open  { opacity: 0; transform: scale(0.6) rotate(90deg); }
+.chat-fab.open .fab-icon-close { opacity: 1; transform: scale(1) rotate(0deg); }
+
+/* Unread badge on FAB */
+.fab-badge {
+  position: absolute; top: -2px; right: -2px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #ef4444; color: white;
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid white;
+  transition: transform 0.2s;
+}
+.chat-fab.open .fab-badge { transform: scale(0); }
+
+/* Popup window */
+.chat-popup {
+  position: fixed; bottom: 96px; right: 28px; z-index: 499;
+  width: 370px; height: 560px;
+  background: var(--white);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 60px rgba(60,70,120,0.16), 0 4px 16px rgba(60,70,120,0.08);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  transform-origin: bottom right;
+  transform: scale(0.85) translateY(12px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), opacity 0.2s ease;
+}
+.chat-popup.open {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Chat header */
+.chat-hd {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #4361ee 0%, #8b5cf6 100%);
+}
+.ai-avatar { width: 36px; height: 36px; border-radius: 11px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.25); }
+.ai-avatar i { font-size: 18px; color: white; }
+.ai-name { font-size: 13px; font-weight: 700; color: white; }
+.ai-status { font-size: 11px; color: rgba(255,255,255,0.75); display: flex; align-items: center; gap: 4px; }
+.ai-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 5px #4ade80; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+.mode-badge { margin-left: auto; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; background: rgba(255,255,255,0.18); color: white; border: 1px solid rgba(255,255,255,0.25); letter-spacing: 0.03em; }
+
+/* Messages */
+.chat-msgs { flex: 1; overflow-y: auto; padding: 14px 12px; display: flex; flex-direction: column; gap: 10px; background: var(--page-bg); }
+.msg { max-width: 88%; display: flex; flex-direction: column; }
+.msg-ai { align-self: flex-start; }
+.msg-user { align-self: flex-end; }
+.msg-bubble { padding: 9px 12px; border-radius: 12px; font-size: 12.5px; line-height: 1.55; }
+.msg-ai .msg-bubble { background: var(--white); border: 1px solid var(--border); color: var(--text1); border-radius: 4px 12px 12px 12px; box-shadow: var(--shadow); }
+.msg-user .msg-bubble { background: var(--blue); color: white; border-radius: 12px 4px 12px 12px; }
+.msg-time { font-size: 10px; color: var(--text3); margin-top: 3px; font-family: var(--mono); }
+.msg-user .msg-time { text-align: right; }
+
+/* Approval bubble */
+.appr-bubble {
+  background: var(--white); border: 1.5px solid #fde68a;
+  border-radius: 4px 12px 12px 12px; padding: 12px;
+  font-size: 12.5px; max-width: 95%; box-shadow: var(--shadow);
+}
+.appr-title { font-size: 11px; font-weight: 700; color: #d97706; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+.appr-body { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: 10px; }
+.appr-actions { display: flex; gap: 6px; }
+.appr-approve { background: var(--green-lt); color: #16a34a; border: 1px solid #bbf7d0; border-radius: 7px; padding: 5px 12px; font-size: 11.5px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 4px; transition: all 0.15s; }
+.appr-approve:hover { background: #dcfce7; }
+.appr-reject { background: var(--red-lt); color: var(--red); border: 1px solid #fecaca; border-radius: 7px; padding: 5px 12px; font-size: 11.5px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 4px; transition: all 0.15s; }
+.appr-reject:hover { background: #fee2e2; }
+.done-pill-g { display: inline-flex; align-items: center; gap: 4px; background: var(--green-lt); color: #16a34a; border-radius: 20px; padding: 4px 11px; font-size: 11px; font-weight: 600; }
+.done-pill-r { display: inline-flex; align-items: center; gap: 4px; background: var(--red-lt); color: var(--red); border-radius: 20px; padding: 4px 11px; font-size: 11px; font-weight: 600; }
+
+/* Typing */
+.typing-wrap { display: flex; align-items: center; gap: 4px; padding: 3px 2px; }
+.typing-wrap span { width: 5px; height: 5px; border-radius: 50%; background: var(--text3); animation: tdot 1.4s infinite ease-in-out; }
+.typing-wrap span:nth-child(2){animation-delay:.2s}
+.typing-wrap span:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
+
+/* Limit notice */
+.limit-notice { margin: 6px 10px 0; padding: 7px 10px; background: var(--amber-lt); border: 1px solid #fde68a; border-radius: 8px; font-size: 11px; color: #92400e; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+/* Prompt chips */
+.prompt-chips { padding: 8px 10px 6px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 5px; flex-shrink: 0; background: var(--white); }
+.p-chip { font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 1.5px solid var(--border); color: var(--text2); background: var(--page-bg); cursor: pointer; font-family: inherit; font-weight: 500; transition: all 0.15s; white-space: nowrap; }
+.p-chip:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-lt); }
+
+/* Input area */
+.chat-input-area { padding: 10px 12px 12px; border-top: 1px solid var(--border); display: flex; gap: 7px; align-items: flex-end; flex-shrink: 0; background: var(--white); }
+.chat-ta { flex: 1; background: var(--page-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 11px; font-family: inherit; font-size: 12.5px; color: var(--text1); resize: none; outline: none; max-height: 90px; min-height: 36px; transition: border-color 0.15s; line-height: 1.4; }
+.chat-ta:focus { border-color: var(--blue); background: white; }
+.chat-ta::placeholder { color: var(--text3); }
+.send-btn { width: 36px; height: 36px; border-radius: 9px; background: var(--blue); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; flex-shrink: 0; }
+.send-btn:hover { background: #3451d1; }
+.send-btn i { font-size: 17px; color: white; }
+.send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── MISC ── */
+.flex { display: flex; }
+.items-c { align-items: center; }
+.gap6 { gap: 6px; }
+.gap10 { gap: 10px; }
+.ml-a { margin-left: auto; }
+.mono { font-family: var(--mono); }
+.c-green { color: #16a34a; }
+.c-amber { color: #d97706; }
+.c-red { color: var(--red); }
+.c-blue { color: var(--blue); }
+.c-t2 { color: var(--text2); }
+.c-t3 { color: var(--text3); }
+.fw6 { font-weight: 600; }
+.fs12 { font-size: 12px; }
+.fs11 { font-size: 11px; }
+.divider { height: 1px; background: var(--border); margin: 12px 0; }
+
+/* Records tabs */
+.rec-tab {
+  padding: 8px 14px; font-size: 12.5px; font-weight: 500;
+  background: none; border: none; border-bottom: 2px solid transparent;
+  color: var(--text2); cursor: pointer; font-family: inherit;
+  display: flex; align-items: center; gap: 5px;
+  margin-bottom: -1px; transition: all 0.15s;
+  white-space: nowrap;
+}
+.rec-tab:hover { color: var(--text1); }
+.rec-tab.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+
+/* Modal animation */
+@keyframes modalin { from{opacity:0;transform:scale(0.93) translateY(12px)} to{opacity:1;transform:none} }
+
+/* Trending skill bar */
+.skill-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.skill-name { font-size: 13px; color: var(--text1); width: 130px; flex-shrink: 0; }
+.skill-bar-wrap { flex: 1; height: 8px; background: var(--page-bg); border-radius: 4px; border: 1px solid var(--border); overflow: hidden; }
+.skill-bar-fill { height: 100%; border-radius: 4px; background: var(--blue); }
+.skill-pct { font-size: 12px; font-weight: 600; color: var(--text2); font-family: var(--mono); width: 32px; text-align: right; }
+
+/* Curated profile */
+.profile-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.profile-row:last-child { border-bottom: none; }
+.profile-pic { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--page-bg); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+.profile-name { font-size: 13px; font-weight: 600; color: var(--text1); }
+.profile-role { font-size: 11px; color: var(--text3); }
+</style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="login-screen">
+  <div class="login-wrap">
+    <div class="login-panel">
+      <div class="login-logo">
+        <div class="logo-mark"><i class="ti ti-briefcase"></i></div>
+        <div class="logo-name">HRflow<span>.ai</span></div>
+      </div>
+      <div class="login-title">Welcome back 👋</div>
+      <div class="login-sub">Choose your role to access your personalised dashboard</div>
+      <div class="role-cards">
+        <div class="role-card selected" id="rc-admin" onclick="selectRole('admin')">
+          <div class="rc-icon"><i class="ti ti-shield-check"></i></div>
+          <div class="rc-name">Administrator</div>
+          <div class="rc-desc">Full access to payroll, records & templates</div>
+        </div>
+        <div class="role-card" id="rc-employee" onclick="selectRole('employee')">
+          <div class="rc-icon"><i class="ti ti-user-circle"></i></div>
+          <div class="rc-name">Employee</div>
+          <div class="rc-desc">Leave, KPI, payslips & guidelines</div>
+        </div>
+      </div>
+      <button class="login-btn" onclick="launch()">Enter Dashboard →</button>
+    </div>
+    <div class="login-visual">
+      <div class="visual-icon"><i class="ti ti-briefcase"></i></div>
+      <div class="visual-tagline">Smart HR,<br>Powered by AI</div>
+      <div class="visual-sub">Malaysia-compliant · Claude-powered</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ APP ══════════ -->
+<div id="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="tb-brand">
+      <div class="tb-logo-mark"><i class="ti ti-briefcase"></i></div>
+      <div class="tb-logo-name">HRflow<span>.ai</span></div>
+    </div>
+    <div class="tb-search">
+      <i class="ti ti-search"></i>
+      <span>Search employees, docs…</span>
+      <kbd>⌘K</kbd>
+    </div>
+    <div class="tb-right">
+      <div class="role-chip" id="role-chip">Admin</div>
+      <div class="tb-icon" style="position:relative;">
+        <i class="ti ti-bell"></i>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="tb-icon"><i class="ti ti-message-circle"></i></div>
+      <div class="user-btn">
+        <div class="u-avatar" id="tb-avatar" style="background:var(--blue-lt);color:var(--blue);">NL</div>
+        <div class="u-name" id="tb-name">Nelson L</div>
+      </div>
+      <button class="logout-btn" onclick="logout()"><i class="ti ti-logout" style="font-size:13px;vertical-align:-2px;"></i> Logout</button>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- ICON RAIL -->
+    <div class="icon-rail" id="icon-rail">
+      <div class="rail-icon active" title="Dashboard"><i class="ti ti-layout-dashboard"></i></div>
+      <div class="rail-icon" title="People"><i class="ti ti-users"></i></div>
+      <div class="rail-divider"></div>
+      <div class="rail-icon" title="Documents"><i class="ti ti-file-text"></i></div>
+      <div class="rail-icon" title="Resources"><i class="ti ti-book"></i></div>
+      <div class="rail-divider"></div>
+      <div class="rail-icon" title="Settings" style="margin-top:auto;"><i class="ti ti-settings"></i></div>
+      <div class="rail-icon" title="Help"><i class="ti ti-help-circle"></i></div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main" id="main-content">
+
+      <!-- ══ ADMIN PAGES ══ -->
+
+      <div class="page" id="page-overview">
+        <div class="page-title">Dashboard</div>
+        <div class="stat-grid g4">
+          <div class="stat-card">
+            <div class="sc-label">Total Employees</div>
+            <div class="sc-value" style="color:var(--blue);">24</div>
+            <div class="sc-sub">↑ 2 new this month</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">Pending Leaves</div>
+            <div class="sc-value" style="color:var(--amber);">3</div>
+            <div class="sc-sub">Awaiting approval</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">May Payroll</div>
+            <div class="sc-value" style="color:var(--green);">RM 187K</div>
+            <div class="sc-sub">Payslips not yet sent</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">Avg KPI Score</div>
+            <div class="sc-value" style="color:var(--violet);">79%</div>
+            <div class="sc-sub">Q2 2025</div>
+          </div>
+        </div>
+
+        <div class="stat-grid" style="grid-template-columns:1.4fr 1fr 0.8fr;gap:14px;margin-bottom:16px;">
+          <!-- Talent Insight hero -->
+          <div class="hero-card">
+            <div style="font-size:12px;font-weight:700;color:#6366f1;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.07em;">Talent Pool Insight</div>
+            <div class="hero-pct">68%</div>
+            <div class="hero-text"><strong>Engineering roles</strong> are in <strong>high demand</strong> with only 32% internal supply.</div>
+            <div class="hero-bar-track"><div class="hero-bar-fill" style="width:68%;"></div></div>
+            <div class="hero-labels"><span>Low</span><span>High</span></div>
+          </div>
+          <!-- Pending Approvals -->
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-hd"><div class="card-title"><i class="ti ti-clock-hour-4"></i> Pending Approvals</div><span class="badge bg-amber">3</span></div>
+            <div class="act-item">
+              <div class="ava ava-sm" style="background:var(--blue-lt);color:var(--blue);">AH</div>
+              <div class="act-body"><div class="act-title" style="font-size:12px;">Ahmad Hassan · Annual Leave</div><div class="act-time">12–13 May · 2 days</div></div>
+            </div>
+            <div class="act-item">
+              <div class="ava ava-sm" style="background:var(--teal-lt);color:var(--teal);">PR</div>
+              <div class="act-body"><div class="act-title" style="font-size:12px;">Priya Rao · Medical Leave</div><div class="act-time">13 May · 1 day</div></div>
+            </div>
+            <div class="act-item">
+              <div class="ava ava-sm" style="background:var(--red-lt);color:var(--red);">JL</div>
+              <div class="act-body"><div class="act-title" style="font-size:12px;">Jason Lim · Unpaid Leave</div><div class="act-time">15–17 May · 3 days</div></div>
+            </div>
+          </div>
+          <!-- Curated Highlight -->
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-hd"><div class="card-title" style="color:var(--blue);">Top Performers</div></div>
+            <div class="profile-row">
+              <div class="profile-pic" style="background:var(--blue-lt);color:var(--blue);">AH</div>
+              <div><div class="profile-name">Ahmad Hassan</div><div class="profile-role">Senior Developer</div></div>
+            </div>
+            <div class="profile-row">
+              <div class="profile-pic" style="background:var(--teal-lt);color:var(--teal);">NZ</div>
+              <div><div class="profile-name">Nur Zahra</div><div class="profile-role">Accountant · KPI 91%</div></div>
+            </div>
+            <div class="profile-row">
+              <div class="profile-pic" style="background:var(--violet-lt);color:var(--violet);">SL</div>
+              <div><div class="profile-name">Siti Liana</div><div class="profile-role">Content Lead</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-grid" style="grid-template-columns:1fr 1fr;gap:14px;">
+          <!-- Trending Skills -->
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-hd"><div class="card-title"><i class="ti ti-trending-up"></i> Trending Skills</div></div>
+            <div class="skill-row"><div class="skill-name">Generative AI</div><div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:34%;background:#6366f1;"></div></div><div class="skill-pct">34%</div></div>
+            <div class="skill-row"><div class="skill-name">Cloud Architecture</div><div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:28%;background:var(--blue);"></div></div><div class="skill-pct">28%</div></div>
+            <div class="skill-row"><div class="skill-name">React / Next.js</div><div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:20%;background:var(--teal);"></div></div><div class="skill-pct">20%</div></div>
+            <div class="skill-row"><div class="skill-name">DevOps</div><div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:12%;background:var(--amber);"></div></div><div class="skill-pct">12%</div></div>
+            <div class="skill-row"><div class="skill-name">Data Analytics</div><div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:8%;background:var(--red);"></div></div><div class="skill-pct">8%</div></div>
+          </div>
+          <!-- Recent Activity -->
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-hd"><div class="card-title"><i class="ti ti-activity"></i> Recent Activity</div></div>
+            <div class="act-item">
+              <div class="act-icon" style="background:var(--blue-lt);"><i class="ti ti-file-check" style="color:var(--blue);"></i></div>
+              <div class="act-body"><div class="act-title">Payslip template updated</div><div class="act-time">Today, 9:14 AM</div></div>
+            </div>
+            <div class="act-item">
+              <div class="act-icon" style="background:var(--green-lt);"><i class="ti ti-mail" style="color:var(--green);"></i></div>
+              <div class="act-body"><div class="act-title">Q2 Review Memo sent to all staff</div><div class="act-time">Yesterday, 4:30 PM</div></div>
+            </div>
+            <div class="act-item">
+              <div class="act-icon" style="background:var(--amber-lt);"><i class="ti ti-book" style="color:var(--amber);"></i></div>
+              <div class="act-body"><div class="act-title">Employment Act 2022 added</div><div class="act-time">3 days ago</div></div>
+            </div>
+            <div class="act-item">
+              <div class="act-icon" style="background:var(--violet-lt);"><i class="ti ti-user-plus" style="color:var(--violet);"></i></div>
+              <div class="act-body"><div class="act-title">2 new employees onboarded</div><div class="act-time">5 days ago</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-records">
+        <div class="page-title">Employee Records</div>
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title"><i class="ti ti-users"></i> All Employees (24)</div>
+            <button class="btn btn-primary btn-sm"><i class="ti ti-user-plus"></i> Add Employee</button>
+          </div>
+          <table class="table">
+            <thead><tr><th>Name</th><th>Department</th><th>Position</th><th>Join Date</th><th>Salary</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><div class="flex items-c gap6"><div class="ava ava-sm" style="background:var(--blue-lt);color:var(--blue);">AH</div>Ahmad Hassan</div></td><td>Engineering</td><td>Senior Developer</td><td>Jan 2022</td><td class="mono">RM 6,500</td><td><span class="badge bg-green">Active</span></td></tr>
+              <tr><td><div class="flex items-c gap6"><div class="ava ava-sm" style="background:var(--teal-lt);color:var(--teal);">PR</div>Priya Rao</div></td><td>Human Resources</td><td>HR Executive</td><td>Mar 2023</td><td class="mono">RM 4,800</td><td><span class="badge bg-green">Active</span></td></tr>
+              <tr><td><div class="flex items-c gap6"><div class="ava ava-sm" style="background:var(--red-lt);color:var(--red);">JL</div>Jason Lim</div></td><td>Sales</td><td>Account Manager</td><td>Jun 2021</td><td class="mono">RM 5,200</td><td><span class="badge bg-green">Active</span></td></tr>
+              <tr><td><div class="flex items-c gap6"><div class="ava ava-sm" style="background:var(--violet-lt);color:var(--violet);">NZ</div>Nur Zahra</div></td><td>Finance</td><td>Accountant</td><td>Sep 2020</td><td class="mono">RM 5,800</td><td><span class="badge bg-green">Active</span></td></tr>
+              <tr><td><div class="flex items-c gap6"><div class="ava ava-sm" style="background:var(--amber-lt);color:var(--amber);">CK</div>Chong Kai Wei</div></td><td>Engineering</td><td>UI Designer</td><td>Feb 2024</td><td class="mono">RM 3,800</td><td><span class="badge bg-amber">Probation</span></td></tr>
+              <tr><td><div class="flex items-c gap6"><div class="ava ava-sm" style="background:var(--green-lt);color:var(--green);">SL</div>Siti Liana</div></td><td>Marketing</td><td>Content Lead</td><td>Aug 2022</td><td class="mono">RM 4,500</td><td><span class="badge bg-green">Active</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-payroll">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <div>
+            <div class="page-title" style="margin-bottom:2px;">Documents & Payroll</div>
+            <div style="font-size:12px;color:var(--text2);">All issued documents — viewable, searchable, and tracked</div>
+          </div>
+          <button class="btn btn-primary btn-sm"><i class="ti ti-plus"></i> New Document</button>
+        </div>
+
+        <!-- Summary stats -->
+        <div class="stat-grid g4" style="margin-bottom:20px;">
+          <div class="stat-card"><div class="sc-label">May Payroll</div><div class="sc-value">RM 187,400</div><div class="sc-sub">24 employees</div></div>
+          <div class="stat-card"><div class="sc-label">Payslips Sent (2025)</div><div class="sc-value c-green">4</div><div class="sc-sub">Last: Apr 2025</div></div>
+          <div class="stat-card"><div class="sc-label">Memos & Notices</div><div class="sc-value" style="color:var(--violet);">16</div><div class="sc-sub">This year</div></div>
+          <div class="stat-card"><div class="sc-label">HR Letters</div><div class="sc-value c-amber">5</div><div class="sc-sub">Offer + Warning</div></div>
+        </div>
+
+        <!-- Tab bar -->
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:0;">
+          <button class="rec-tab active" onclick="switchTab('all')" id="tab-all">All Records</button>
+          <button class="rec-tab" onclick="switchTab('payslip')" id="tab-payslip"><i class="ti ti-receipt" style="font-size:13px;"></i> Payslips</button>
+          <button class="rec-tab" onclick="switchTab('memo')" id="tab-memo"><i class="ti ti-mail" style="font-size:13px;"></i> Memos</button>
+          <button class="rec-tab" onclick="switchTab('notice')" id="tab-notice"><i class="ti ti-speakerphone" style="font-size:13px;"></i> Notices</button>
+          <button class="rec-tab" onclick="switchTab('offer')" id="tab-offer"><i class="ti ti-file-description" style="font-size:13px;"></i> Offer Letters</button>
+          <button class="rec-tab" onclick="switchTab('warning')" id="tab-warning"><i class="ti ti-alert-triangle" style="font-size:13px;"></i> Warning Letters</button>
+        </div>
+
+        <!-- Records table -->
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="table" id="records-table">
+            <thead>
+              <tr>
+                <th style="padding-left:20px;">Document</th>
+                <th>Type</th>
+                <th>Issued By</th>
+                <th>Recipients</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th style="padding-right:20px;"></th>
+              </tr>
+            </thead>
+            <tbody id="records-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-resources">
+        <div class="page-title">HR Resources</div>
+        <div class="stat-grid g2">
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-hd"><div class="card-title"><i class="ti ti-scale"></i> Legal References</div></div>
+            <div class="res-item"><div class="res-thumb"><i class="ti ti-file-certificate"></i></div><div><div class="res-name">Employment Act 1955 (Amendment 2022)</div><div class="res-meta">Updated Jan 2023 · <span style="color:var(--green);font-weight:600;">AI-indexed ✓</span></div></div><i class="ti ti-chevron-right res-arrow"></i></div>
+            <div class="res-item"><div class="res-thumb"><i class="ti ti-file-certificate"></i></div><div><div class="res-name">EPF Act 1991</div><div class="res-meta">Contribution rates & employer obligations · <span style="color:var(--green);font-weight:600;">AI-indexed ✓</span></div></div><i class="ti ti-chevron-right res-arrow"></i></div>
+            <div class="res-item"><div class="res-thumb"><i class="ti ti-file-certificate"></i></div><div><div class="res-name">SOCSO & EIS Guidelines 2024</div><div class="res-meta">PERKESO updated rates · <span style="color:var(--green);font-weight:600;">AI-indexed ✓</span></div></div><i class="ti ti-chevron-right res-arrow"></i></div>
+            <div class="res-item"><div class="res-thumb"><i class="ti ti-file-certificate"></i></div><div><div class="res-name">PDPA Malaysia 2010</div><div class="res-meta">Employee data handling · <span style="color:var(--green);font-weight:600;">AI-indexed ✓</span></div></div><i class="ti ti-chevron-right res-arrow"></i></div>
+            <div class="res-item"><div class="res-thumb"><i class="ti ti-file-certificate"></i></div><div><div class="res-name">Income Tax Act 1967 (PCB/MTD)</div><div class="res-meta">Deduction reference · <span style="color:var(--green);font-weight:600;">AI-indexed ✓</span></div></div><i class="ti ti-chevron-right res-arrow"></i></div>
+          </div>
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-hd"><div class="card-title"><i class="ti ti-building"></i> Company Policies</div><button class="btn btn-ghost btn-sm"><i class="ti ti-upload"></i> Upload</button></div>
+            <div class="res-item"><div class="res-thumb" style="background:var(--green-lt);"><i class="ti ti-book" style="color:var(--green);"></i></div><div><div class="res-name">Employee Handbook 2025</div><div class="res-meta">Uploaded 15 Jan 2025 · <span style="color:var(--green);font-weight:600;">AI-indexed ✓</span></div></div><i class="ti ti-chevron-right res-arrow"></i></div>
+            <div class="res-item"><div class="res-thumb" style="background:var(--green-lt);"><i class="ti ti-calendar" style="color:var(--green);"></i></div><div><div class="res-name">Leave Policy 2025</div><div class="res-meta">Updated Mar 2025 · <span style="color:var(--green);font-weight:600;">AI-indexed ✓</span></div></div><i class="ti ti-chevron-right res-arrow"></i></div>
+            <div class="res-item"><div class="res-thumb" style="background:var(--green-lt);"><i class="ti ti-home" style="color:var(--green);"></i></div><div><div class="res-name">WFH & Remote Work Policy</div><div class="res-meta">Updated 1 May 2025 · <span style="color:var(--green);font-weight:600;">AI-indexed ✓</span></div></div><i class="ti ti-chevron-right res-arrow"></i></div>
+            <div class="res-item"><div class="res-thumb" style="background:var(--amber-lt);"><i class="ti ti-upload" style="color:var(--amber);"></i></div><div><div class="res-name">Upload New Document</div><div class="res-meta">PDF, DOCX — auto-indexed for AI assistant</div></div><i class="ti ti-chevron-right res-arrow"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-templates">
+        <div class="page-title">Templates</div>
+        <div class="stat-grid g2">
+          <div>
+            <div class="tpl-item" onclick="openTpl('payslip')"><div class="tpl-icon"><i class="ti ti-receipt"></i></div><div><div class="tpl-name">Payslip Template</div><div class="tpl-desc">Monthly salary slip with EPF, SOCSO, EIS, PCB</div></div><i class="ti ti-chevron-right" style="margin-left:auto;color:var(--text3);"></i></div>
+            <div class="tpl-item" onclick="openTpl('memo')"><div class="tpl-icon"><i class="ti ti-mail"></i></div><div><div class="tpl-name">Internal Memo</div><div class="tpl-desc">Standard company memo with letterhead</div></div><i class="ti ti-chevron-right" style="margin-left:auto;color:var(--text3);"></i></div>
+            <div class="tpl-item" onclick="openTpl('notice')"><div class="tpl-icon"><i class="ti ti-speakerphone"></i></div><div><div class="tpl-name">Staff Notice</div><div class="tpl-desc">Official announcement template</div></div><i class="ti ti-chevron-right" style="margin-left:auto;color:var(--text3);"></i></div>
+          </div>
+          <div>
+            <div class="tpl-item" onclick="openTpl('offer')"><div class="tpl-icon"><i class="ti ti-file-description"></i></div><div><div class="tpl-name">Offer Letter</div><div class="tpl-desc">New hire offer with terms and conditions</div></div><i class="ti ti-chevron-right" style="margin-left:auto;color:var(--text3);"></i></div>
+            <div class="tpl-item" onclick="openTpl('warning')"><div class="tpl-icon"><i class="ti ti-alert-triangle"></i></div><div><div class="tpl-name">Warning Letter</div><div class="tpl-desc">Formal warning with escalation framework</div></div><i class="ti ti-chevron-right" style="margin-left:auto;color:var(--text3);"></i></div>
+            <div class="tpl-item" onclick="openTpl('handbook')"><div class="tpl-icon"><i class="ti ti-book-2"></i></div><div><div class="tpl-name">Employee Handbook</div><div class="tpl-desc">Company guide with policies and procedures</div></div><i class="ti ti-chevron-right" style="margin-left:auto;color:var(--text3);"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEMPLATE MODAL OVERLAY -->
+      <div id="tpl-overlay" onclick="closeTpl(event)" style="display:none;position:fixed;inset:0;z-index:400;background:rgba(20,24,50,0.45);backdrop-filter:blur(3px);align-items:center;justify-content:center;">
+        <div id="tpl-modal" onclick="event.stopPropagation()" style="background:#fff;border-radius:18px;width:700px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(30,40,100,0.18);overflow:hidden;animation:modalin 0.22s cubic-bezier(.34,1.56,.64,1);">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);flex-shrink:0;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div id="tpl-micon" style="width:34px;height:34px;border-radius:9px;background:var(--blue-lt);display:flex;align-items:center;justify-content:center;"><i id="tpl-micon-i" class="ti ti-receipt" style="font-size:18px;color:var(--blue);"></i></div>
+              <div><div id="tpl-mtitle" style="font-size:14px;font-weight:700;color:var(--text1);"></div><div style="font-size:11px;color:var(--text3);">Nectorious Sdn. Bhd. · Sample Preview</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--green-lt);color:#16a34a;border:1px solid #bbf7d0;">Sample</span>
+              <button onclick="closeTpl()" style="width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--page-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="ti ti-x" style="font-size:15px;color:var(--text2);"></i></button>
+            </div>
+          </div>
+          <div id="tpl-mbody" style="overflow-y:auto;padding:0;flex:1;"></div>
+        </div>
+      </div>
+
+      <div class="page" id="page-approvals">
+        <div class="page-title">Approvals</div>
+        <div class="card">
+          <div class="card-hd"><div class="card-title"><i class="ti ti-calendar-off"></i> Leave Requests</div><span class="badge bg-amber">3 pending</span></div>
+          <table class="table">
+            <thead><tr><th>Employee</th><th>Type</th><th>Dates</th><th>Days</th><th>Reason</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><div class="flex items-c gap6"><div class="ava ava-sm" style="background:var(--blue-lt);color:var(--blue);">AH</div>Ahmad Hassan</div></td><td>Annual Leave</td><td class="mono">12–13 May</td><td>2</td><td>Family event</td><td><div class="flex gap6"><button class="btn btn-success btn-sm" onclick="approveRow(this)"><i class="ti ti-check"></i> Approve</button><button class="btn btn-danger btn-sm" onclick="rejectRow(this)"><i class="ti ti-x"></i></button></div></td></tr>
+              <tr><td><div class="flex items-c gap6"><div class="ava ava-sm" style="background:var(--teal-lt);color:var(--teal);">PR</div>Priya Rao</div></td><td>Medical Leave</td><td class="mono">13 May</td><td>1</td><td>MC attached</td><td><div class="flex gap6"><button class="btn btn-success btn-sm" onclick="approveRow(this)"><i class="ti ti-check"></i> Approve</button><button class="btn btn-danger btn-sm" onclick="rejectRow(this)"><i class="ti ti-x"></i></button></div></td></tr>
+              <tr><td><div class="flex items-c gap6"><div class="ava ava-sm" style="background:var(--red-lt);color:var(--red);">JL</div>Jason Lim</div></td><td>Unpaid Leave</td><td class="mono">15–17 May</td><td>3</td><td>Personal matters</td><td><div class="flex gap6"><button class="btn btn-success btn-sm" onclick="approveRow(this)"><i class="ti ti-check"></i> Approve</button><button class="btn btn-danger btn-sm" onclick="rejectRow(this)"><i class="ti ti-x"></i></button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══ EMPLOYEE PAGES ══ -->
+
+      <div class="page" id="page-emp-home">
+        <div class="page-title">My Dashboard</div>
+        <div class="stat-grid g4">
+          <div class="stat-card"><div class="sc-label">Annual Leave Left</div><div class="sc-value c-blue">8 days</div><div class="sc-sub">6 used of 14</div></div>
+          <div class="stat-card"><div class="sc-label">Medical Leave Left</div><div class="sc-value c-green">10 days</div><div class="sc-sub">4 used of 14</div></div>
+          <div class="stat-card"><div class="sc-label">KPI Score Q2</div><div class="sc-value" style="color:var(--violet);">82%</div><div class="sc-sub">Above target (75%)</div></div>
+          <div class="stat-card"><div class="sc-label">Attendance</div><div class="sc-value c-green">95%</div><div class="sc-sub">May 2025</div></div>
+        </div>
+        <div class="stat-grid g2">
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-hd"><div class="card-title"><i class="ti ti-calendar"></i> My Leave History</div><span class="card-action" onclick="nav('emp-leave')">Apply new →</span></div>
+            <div class="act-item"><div class="act-icon" style="background:var(--green-lt);"><i class="ti ti-check" style="color:var(--green);"></i></div><div class="act-body"><div class="act-title">Annual Leave — 2 days (1–2 May)</div><div class="act-time"><span class="badge bg-green">Approved</span></div></div></div>
+            <div class="act-item"><div class="act-icon" style="background:var(--amber-lt);"><i class="ti ti-clock" style="color:var(--amber);"></i></div><div class="act-body"><div class="act-title">Annual Leave — 2 days (12–13 May)</div><div class="act-time"><span class="badge bg-amber">Pending</span></div></div></div>
+            <div class="act-item"><div class="act-icon" style="background:var(--green-lt);"><i class="ti ti-check" style="color:var(--green);"></i></div><div class="act-body"><div class="act-title">Medical Leave — 1 day (10 Mar)</div><div class="act-time"><span class="badge bg-green">Approved</span></div></div></div>
+          </div>
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-hd"><div class="card-title"><i class="ti ti-receipt"></i> Latest Payslip — April 2025</div><span class="badge bg-green">Received</span></div>
+            <div style="padding:4px 0;">
+              <div class="flex items-c" style="margin-bottom:8px;"><span class="c-t2 fs12">Basic Salary</span><span class="mono ml-a fw6">RM 5,500.00</span></div>
+              <div class="flex items-c" style="margin-bottom:8px;"><span class="c-t2 fs12">EPF (11%)</span><span class="mono ml-a c-red">−RM 605.00</span></div>
+              <div class="flex items-c" style="margin-bottom:8px;"><span class="c-t2 fs12">SOCSO</span><span class="mono ml-a c-red">−RM 29.75</span></div>
+              <div class="flex items-c" style="margin-bottom:8px;"><span class="c-t2 fs12">PCB (Tax)</span><span class="mono ml-a c-red">−RM 153.25</span></div>
+              <div class="divider"></div>
+              <div class="flex items-c"><span class="fw6">Net Pay</span><span class="mono ml-a fw6 c-green" style="font-size:16px;">RM 4,712.00</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-emp-leave">
+        <div class="page-title">Leave Application</div>
+        <div class="stat-grid g2">
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-hd"><div class="card-title"><i class="ti ti-calendar-plus"></i> New Application</div></div>
+            <div class="fg"><label class="flabel">Leave Type</label><select class="fselect"><option>Annual Leave</option><option>Medical Leave</option><option>Emergency Leave</option><option>Maternity Leave</option><option>Paternity Leave</option><option>Unpaid Leave</option></select></div>
+            <div class="stat-grid g2" style="gap:10px;margin-bottom:0;"><div class="fg"><label class="flabel">Start Date</label><input type="date" class="finput" value="2025-05-14"></div><div class="fg"><label class="flabel">End Date</label><input type="date" class="finput" value="2025-05-15"></div></div>
+            <div class="fg"><label class="flabel">Reason</label><textarea class="ftextarea" placeholder="Brief reason for your leave…"></textarea></div>
+            <div class="fg"><label class="flabel">Supporting Document (optional)</label><input type="file" class="finput" style="padding:6px;"></div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;"><i class="ti ti-send"></i> Submit Application</button>
+          </div>
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-hd"><div class="card-title"><i class="ti ti-list"></i> Leave History</div></div>
+            <table class="table">
+              <thead><tr><th>Type</th><th>Dates</th><th>Days</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Annual</td><td class="mono">1–2 May</td><td>2</td><td><span class="badge bg-green">Approved</span></td></tr>
+                <tr><td>Annual</td><td class="mono">12–13 May</td><td>2</td><td><span class="badge bg-amber">Pending</span></td></tr>
+                <tr><td>Medical</td><td class="mono">10 Mar</td><td>1</td><td><span class="badge bg-green">Approved</span></td></tr>
+                <tr><td>Annual</td><td class="mono">3–4 Jan</td><td>2</td><td><span class="badge bg-green">Approved</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-emp-quota">
+        <div class="page-title">Leave Balance</div>
+        <div class="card">
+          <div class="card-hd"><div class="card-title"><i class="ti ti-chart-pie"></i> 2025 Leave Quota</div></div>
+          <div class="prog-wrap"><div class="prog-meta"><span class="prog-label">Annual Leave</span><span class="prog-val">6 used · 8 left / 14</span></div><div class="prog-bar"><div class="prog-fill" style="width:43%;background:var(--blue);"></div></div></div>
+          <div class="prog-wrap"><div class="prog-meta"><span class="prog-label">Medical Leave</span><span class="prog-val">4 used · 10 left / 14</span></div><div class="prog-bar"><div class="prog-fill" style="width:29%;background:var(--green);"></div></div></div>
+          <div class="prog-wrap"><div class="prog-meta"><span class="prog-label">Emergency Leave</span><span class="prog-val">0 used · 3 left / 3</span></div><div class="prog-bar"><div class="prog-fill" style="width:0%;background:var(--teal);"></div></div></div>
+          <div class="prog-wrap"><div class="prog-meta"><span class="prog-label">Hospitalisation Leave</span><span class="prog-val">0 used · 60 left / 60</span></div><div class="prog-bar"><div class="prog-fill" style="width:0%;background:var(--amber);"></div></div></div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><div class="card-title"><i class="ti ti-scale"></i> Malaysia Employment Act 2022 — Entitlements</div></div>
+          <table class="table">
+            <thead><tr><th>Leave Type</th><th>Entitlement</th><th>Eligibility</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>Annual Leave</td><td>14 days</td><td>After 12 months</td><td>Up to 50% carry-forward</td></tr>
+              <tr><td>Medical Leave (Outpatient)</td><td>14 days</td><td>With valid MC</td><td>Submit MC within 48h</td></tr>
+              <tr><td>Hospitalisation Leave</td><td>60 days</td><td>Includes outpatient</td><td>Combined total</td></tr>
+              <tr><td>Maternity Leave</td><td>98 days</td><td>Female employees</td><td>EA 2022 amendment</td></tr>
+              <tr><td>Paternity Leave</td><td>7 days</td><td>Male employees</td><td>EA 2022 amendment</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-emp-kpi">
+        <div class="page-title">KPI & Performance</div>
+        <div class="stat-grid g2">
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-hd"><div class="card-title"><i class="ti ti-target"></i> Overall Q2 Score</div></div>
+            <div class="kpi-ring-wrap">
+              <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#eef0f7" stroke-width="12"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="url(#kg)" stroke-width="12" stroke-dasharray="314" stroke-dashoffset="56.5" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+                <defs><linearGradient id="kg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#14b8a6"/></linearGradient></defs>
+                <text x="60" y="56" text-anchor="middle" font-family="Plus Jakarta Sans" font-size="24" font-weight="700" fill="#1a1d2e">82</text>
+                <text x="60" y="71" text-anchor="middle" font-family="Plus Jakarta Sans" font-size="12" fill="#a8adca">/ 100</text>
+              </svg>
+              <div>
+                <div style="font-size:19px;font-weight:700;letter-spacing:-0.3px;margin-bottom:4px;">Above Target</div>
+                <div class="c-t2 fs12">Target: 75 · <span class="c-green fw6">+7 pts</span></div>
+                <div class="c-t3 fs11" style="margin-top:6px;">Q2 2025 · Reviewed</div>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-hd"><div class="card-title"><i class="ti ti-chart-bar"></i> Category Breakdown</div></div>
+            <div class="prog-wrap" style="margin-top:4px;"><div class="prog-meta"><span class="prog-label">Attendance</span><span class="prog-val">95%</span></div><div class="prog-bar"><div class="prog-fill" style="width:95%;background:var(--blue);"></div></div></div>
+            <div class="prog-wrap"><div class="prog-meta"><span class="prog-label">Team Collaboration</span><span class="prog-val">85%</span></div><div class="prog-bar"><div class="prog-fill" style="width:85%;background:var(--teal);"></div></div></div>
+            <div class="prog-wrap"><div class="prog-meta"><span class="prog-label">Project Delivery</span><span class="prog-val">80%</span></div><div class="prog-bar"><div class="prog-fill" style="width:80%;background:var(--green);"></div></div></div>
+            <div class="prog-wrap"><div class="prog-meta"><span class="prog-label">Initiative & Innovation</span><span class="prog-val">76%</span></div><div class="prog-bar"><div class="prog-fill" style="width:76%;background:var(--violet);"></div></div></div>
+            <div class="prog-wrap"><div class="prog-meta"><span class="prog-label">Communication Skills</span><span class="prog-val">70%</span></div><div class="prog-bar"><div class="prog-fill" style="width:70%;background:var(--amber);"></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-emp-payslip">
+        <div class="page-title">My Payslips</div>
+        <div class="card">
+          <table class="table">
+            <thead><tr><th>Month</th><th>Basic Salary</th><th>EPF</th><th>SOCSO</th><th>PCB</th><th>Net Pay</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>May 2025</td><td class="mono">RM 5,500</td><td class="mono c-red">−RM 605</td><td class="mono c-red">−RM 29.75</td><td class="mono c-red">−RM 153.25</td><td class="mono fw6">—</td><td><span class="badge bg-amber">Pending</span></td></tr>
+              <tr><td>April 2025</td><td class="mono">RM 5,500</td><td class="mono c-red">−RM 605</td><td class="mono c-red">−RM 29.75</td><td class="mono c-red">−RM 153.25</td><td class="mono fw6 c-green">RM 4,712</td><td><span class="badge bg-green">Received</span></td></tr>
+              <tr><td>March 2025</td><td class="mono">RM 5,500</td><td class="mono c-red">−RM 605</td><td class="mono c-red">−RM 29.75</td><td class="mono c-red">−RM 153.25</td><td class="mono fw6 c-green">RM 4,712</td><td><span class="badge bg-green">Received</span></td></tr>
+              <tr><td>February 2025</td><td class="mono">RM 5,500</td><td class="mono c-red">−RM 605</td><td class="mono c-red">−RM 29.75</td><td class="mono c-red">−RM 153.25</td><td class="mono fw6 c-green">RM 4,712</td><td><span class="badge bg-green">Received</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+
+  </div><!-- /body -->
+
+  <!-- ══ FLOATING CHAT BUBBLE ══ -->
+  <button class="chat-fab" id="chat-fab" onclick="toggleChat()">
+    <i class="ti ti-message-circle fab-icon-open"></i>
+    <i class="ti ti-x fab-icon-close"></i>
+    <div class="fab-badge" id="fab-badge">1</div>
+  </button>
+
+  <!-- ══ CHAT POPUP ══ -->
+  <div class="chat-popup" id="chat-popup">
+    <div class="chat-hd">
+      <div class="ai-avatar"><i class="ti ti-robot"></i></div>
+      <div>
+        <div class="ai-name">HRflow AI</div>
+        <div class="ai-status"><div class="ai-dot"></div> Online · Claude</div>
+      </div>
+      <div class="mode-badge" id="mode-badge">Admin</div>
+    </div>
+    <div class="chat-msgs" id="chat-msgs"></div>
+    <div class="limit-notice" id="limit-notice" style="display:none;"><i class="ti ti-info-circle"></i> Employee mode: HR topics only</div>
+    <div class="prompt-chips" id="prompt-chips"></div>
+    <div class="chat-input-area">
+      <textarea class="chat-ta" id="chat-input" placeholder="Ask HR AI anything…" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMsg()"><i class="ti ti-send"></i></button>
+    </div>
+  </div>
+</div><!-- /app -->
+
+<script>
+let role = 'admin';
+let sending = false;
+let history = [];
+
+const ADMIN_NAV = [
+  { id:'overview',  label:'Dashboard',          icon:'ti-layout-dashboard' },
+  { id:'records',   label:'Employee Records',    icon:'ti-users' },
+  { id:'payroll',   label:'Documents & Payroll', icon:'ti-file-text' },
+  { id:'resources', label:'HR Resources',        icon:'ti-book' },
+  { id:'templates', label:'Templates',           icon:'ti-template' },
+  { id:'approvals', label:'Approvals',           icon:'ti-check', badge:{n:3,cls:'nb-amber'} },
+];
+const EMP_NAV = [
+  { id:'emp-home',    label:'My Dashboard',       icon:'ti-home' },
+  { id:'emp-leave',   label:'Leave Application',  icon:'ti-calendar-off' },
+  { id:'emp-quota',   label:'Leave Balance',       icon:'ti-chart-pie' },
+  { id:'emp-kpi',     label:'KPI & Performance',  icon:'ti-target' },
+  { id:'emp-payslip', label:'My Payslips',         icon:'ti-receipt' },
+];
+const ADMIN_CHIPS = ['Issue payslips to all','Draft a staff memo','Check leave requests','Malaysia EPF rates 2025'];
+const EMP_CHIPS   = ['Apply for annual leave','Check my leave balance','View my KPI','WFH policy'];
+
+const SYS_ADMIN = `You are HRflow AI, an expert HR assistant for a Malaysian company with full admin access. You can:
+- Generate payslips, memos, notices, warning letters, and offer letters using company templates
+- Answer questions about Malaysia employment law: Employment Act 1955/2022, EPF (Employee Provident Fund), SOCSO, EIS, PDPA, PCB/MTD income tax
+- Help with leave approvals, employee record management, HR reporting
+When asked to generate or send documents (payslips, memos, notices, letters), describe what you will prepare, list key details, then end with exactly: [NEEDS_APPROVAL: brief description of what will be sent to whom]
+Keep responses concise, professional, and well-structured. Use line breaks for readability.`;
+
+const SYS_EMP = `You are HRflow AI, an HR assistant for employees with LIMITED access. You can only help with:
+- Leave applications, checking leave balance, leave types under Malaysia Employment Act 2022
+- KPI and performance queries
+- Viewing payslip information (cannot generate or send payslips)
+- Company guidelines and policies from the uploaded handbook
+- Basic Malaysia Employment Act rights and entitlements
+You CANNOT process payroll, access other employees' data, generate official documents, or make admin decisions. For those, politely redirect to HR/admin. Keep responses friendly, clear, and concise.`;
+
+let chatOpen = false;
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  const fab = document.getElementById('chat-fab');
+  const popup = document.getElementById('chat-popup');
+  fab.classList.toggle('open', chatOpen);
+  popup.classList.toggle('open', chatOpen);
+  if (chatOpen) {
+    document.getElementById('fab-badge').style.display = 'none';
+    if (document.getElementById('chat-msgs').children.length === 0) initChat();
+    setTimeout(() => document.getElementById('chat-input').focus(), 300);
+  }
+}
+
+function selectRole(r) {
+  role = r;
+  document.getElementById('rc-admin').classList.toggle('selected', r==='admin');
+  document.getElementById('rc-employee').classList.toggle('selected', r==='employee');
+}
+
+function launch() {
+  const ls = document.getElementById('login-screen');
+  ls.style.transition = 'opacity 0.3s';
+  ls.style.opacity = '0';
+  setTimeout(() => { ls.style.display='none'; document.getElementById('app').classList.add('visible'); initApp(); }, 300);
+}
+
+function initApp() {
+  const isAdmin = role === 'admin';
+  document.getElementById('tb-avatar').textContent = isAdmin ? 'NL' : 'AH';
+  document.getElementById('tb-avatar').style.background = isAdmin ? 'var(--blue-lt)' : 'var(--teal-lt)';
+  document.getElementById('tb-avatar').style.color = isAdmin ? 'var(--blue)' : 'var(--teal)';
+  document.getElementById('tb-name').textContent = isAdmin ? 'Nelson L' : 'Ahmad Hassan';
+  const chip = document.getElementById('role-chip');
+  chip.textContent = isAdmin ? 'Admin' : 'Employee';
+  chip.className = 'role-chip ' + role;
+  buildSidebar();
+  nav(isAdmin ? 'overview' : 'emp-home');
+  initChat();
+}
+
+function buildSidebar() {
+  const items = role === 'admin' ? ADMIN_NAV : EMP_NAV;
+  const lbl   = role === 'admin' ? 'Admin Panel' : 'My HR';
+  document.getElementById('sidebar').innerHTML =
+    `<div class="sidebar-group"><div class="sidebar-label">${lbl}</div>` +
+    items.map(it => `<div class="nav-item" id="ni-${it.id}" onclick="nav('${it.id}')">
+      <i class="ti ${it.icon}"></i><span>${it.label}</span>
+      ${it.badge ? `<span class="nav-badge ${it.badge.cls}">${it.badge.n}</span>` : ''}
+    </div>`).join('') + `</div>` +
+    (role==='admin' ? `<div class="sidebar-bottom"><div class="trial-card"><div class="trial-title">Trial Active</div><div class="trial-sub">5 more days remaining</div><div class="trial-bar"><div class="trial-fill"></div></div></div></div>` : '');
+}
+
+function nav(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById('page-'+id);
+  if (pg) pg.classList.add('active');
+  const ni = document.getElementById('ni-'+id);
+  if (ni) ni.classList.add('active');
+  if (id === 'payroll') { activeTab = 'all'; document.querySelectorAll('.rec-tab').forEach(t => t.classList.remove('active')); const at = document.getElementById('tab-all'); if(at) at.classList.add('active'); renderRecords(); }
+}
+
+function logout() {
+  document.getElementById('app').classList.remove('visible');
+  const ls = document.getElementById('login-screen');
+  ls.style.display='flex'; ls.style.opacity='1';
+  history=[];
+  // reset chat state
+  chatOpen = false;
+  document.getElementById('chat-fab').classList.remove('open');
+  document.getElementById('chat-popup').classList.remove('open');
+  document.getElementById('fab-badge').style.display = 'flex';
+  document.getElementById('chat-msgs').innerHTML = '';
+}
+
+function approveRow(btn) { btn.closest('tr').querySelector('td:last-child').innerHTML = `<span class="badge bg-green">✓ Approved</span>`; }
+function rejectRow(btn)  { btn.closest('tr').querySelector('td:last-child').innerHTML = `<span class="badge bg-red">✗ Rejected</span>`; }
+
+// ── DOCUMENT RECORDS ──
+const DOC_RECORDS = [
+  // Payslips
+  { id:'ps5', type:'payslip', title:'May 2025 Payslips — All Staff',      by:'Nelson L', recipients:'24 employees',   date:'Pending',      status:'pending',  tplKey:'payslip' },
+  { id:'ps4', type:'payslip', title:'April 2025 Payslips — All Staff',    by:'Nelson L', recipients:'24 employees',   date:'30 Apr 2025',  status:'sent',     tplKey:'payslip' },
+  { id:'ps3', type:'payslip', title:'March 2025 Payslips — All Staff',    by:'Nelson L', recipients:'24 employees',   date:'31 Mar 2025',  status:'sent',     tplKey:'payslip' },
+  { id:'ps2', type:'payslip', title:'February 2025 Payslips — All Staff', by:'Nelson L', recipients:'24 employees',   date:'28 Feb 2025',  status:'sent',     tplKey:'payslip' },
+  { id:'ps1', type:'payslip', title:'January 2025 Payslips — All Staff',  by:'Nelson L', recipients:'24 employees',   date:'31 Jan 2025',  status:'sent',     tplKey:'payslip' },
+  // Memos
+  { id:'m3', type:'memo', title:'Q2 2025 Performance Review Schedule',    by:'Nelson L', recipients:'All staff',      date:'12 May 2025',  status:'sent',     tplKey:'memo' },
+  { id:'m2', type:'memo', title:'Revised Claims Submission Deadline',     by:'Nelson L', recipients:'All staff',      date:'2 Apr 2025',   status:'sent',     tplKey:'memo' },
+  { id:'m1', type:'memo', title:'Q1 2025 Town Hall Meeting Agenda',       by:'Nelson L', recipients:'All staff',      date:'10 Feb 2025',  status:'sent',     tplKey:'memo' },
+  // Notices
+  { id:'n4', type:'notice', title:'Public Holiday — Wesak Day 2025',      by:'Nelson L', recipients:'All staff',      date:'8 May 2025',   status:'sent',     tplKey:'notice' },
+  { id:'n3', type:'notice', title:'Updated WFH Policy — Effective May',   by:'Nelson L', recipients:'All staff',      date:'1 May 2025',   status:'sent',     tplKey:'notice' },
+  { id:'n2', type:'notice', title:'Office Closure — Hari Raya 2025',      by:'Nelson L', recipients:'All staff',      date:'25 Mar 2025',  status:'sent',     tplKey:'notice' },
+  { id:'n1', type:'notice', title:'New Parking Allocation Policy',        by:'Nelson L', recipients:'All staff',      date:'3 Feb 2025',   status:'sent',     tplKey:'notice' },
+  // Offer Letters
+  { id:'o3', type:'offer', title:'Offer Letter — Chong Kai Wei',          by:'Nelson L', recipients:'Chong Kai Wei',  date:'12 May 2025',  status:'sent',     tplKey:'offer' },
+  { id:'o2', type:'offer', title:'Offer Letter — Siti Liana',             by:'Nelson L', recipients:'Siti Liana',     date:'15 Aug 2022',  status:'accepted', tplKey:'offer' },
+  { id:'o1', type:'offer', title:'Offer Letter — Ahmad Hassan',           by:'Nelson L', recipients:'Ahmad Hassan',   date:'5 Jan 2022',   status:'accepted', tplKey:'offer' },
+  // Warning Letters
+  { id:'w2', type:'warning', title:'1st Warning — Attendance Issue',      by:'Nelson L', recipients:'[Confidential]', date:'3 Mar 2025',   status:'acknowledged', tplKey:'warning' },
+  { id:'w1', type:'warning', title:'1st Warning — Late Submission',       by:'Nelson L', recipients:'[Confidential]', date:'11 Nov 2024',  status:'acknowledged', tplKey:'warning' },
+];
+
+const TYPE_META = {
+  payslip: { label:'Payslip',        badge:'bg-blue',   icon:'ti-receipt' },
+  memo:    { label:'Memo',           badge:'bg-violet', icon:'ti-mail' },
+  notice:  { label:'Notice',         badge:'bg-teal',   icon:'ti-speakerphone' },
+  offer:   { label:'Offer Letter',   badge:'bg-green',  icon:'ti-file-description' },
+  warning: { label:'Warning Letter', badge:'bg-red',    icon:'ti-alert-triangle' },
+};
+
+const STATUS_META = {
+  pending:      { badge:'bg-amber', label:'⏳ Awaiting Approval' },
+  sent:         { badge:'bg-green', label:'✓ Sent' },
+  accepted:     { badge:'bg-green', label:'✓ Accepted' },
+  acknowledged: { badge:'bg-gray',  label:'📋 Acknowledged' },
+};
+
+let activeTab = 'all';
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.rec-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  renderRecords();
+}
+
+function renderRecords() {
+  const filtered = activeTab === 'all' ? DOC_RECORDS : DOC_RECORDS.filter(r => r.type === activeTab);
+  const tbody = document.getElementById('records-body');
+  if (!tbody) return;
+  tbody.innerHTML = filtered.map(r => {
+    const tm = TYPE_META[r.type];
+    const sm = STATUS_META[r.status];
+    return `<tr>
+      <td style="padding-left:20px;">
+        <div style="display:flex;align-items:center;gap:9px;">
+          <div style="width:30px;height:30px;border-radius:8px;background:var(--blue-lt);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="ti ${tm.icon}" style="font-size:15px;color:var(--blue);"></i>
+          </div>
+          <span style="font-size:13px;font-weight:500;color:var(--text1);">${r.title}</span>
+        </div>
+      </td>
+      <td><span class="badge ${tm.badge}">${tm.label}</span></td>
+      <td style="font-size:12.5px;color:var(--text2);">${r.by}</td>
+      <td style="font-size:12.5px;color:var(--text2);">${r.recipients}</td>
+      <td style="font-size:12px;color:var(--text3);font-family:var(--mono);">${r.date}</td>
+      <td><span class="badge ${sm.badge}">${sm.label}</span></td>
+      <td style="padding-right:20px;">
+        <button onclick="openTpl('${r.tplKey}')" style="font-size:11.5px;font-weight:600;color:var(--blue);background:var(--blue-lt);border:1px solid var(--blue-mid);border-radius:7px;padding:4px 12px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;white-space:nowrap;">
+          <i class="ti ti-eye" style="font-size:13px;"></i> View
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── TEMPLATE MODAL ──
+const TPL_META = {
+  payslip: { title:'Payslip Template',  icon:'ti-receipt' },
+  memo:    { title:'Internal Memo',     icon:'ti-mail' },
+  notice:  { title:'Staff Notice',      icon:'ti-speakerphone' },
+  offer:   { title:'Offer Letter',      icon:'ti-file-description' },
+  warning: { title:'Warning Letter',    icon:'ti-alert-triangle' },
+  handbook:{ title:'Employee Handbook', icon:'ti-book-2' },
+};
+
+const TPL_HTML = {
+payslip: `<div style="font-family:'Plus Jakarta Sans',sans-serif;padding:32px 40px;background:#fff;">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid #4361ee;">
+    <div><div style="font-size:22px;font-weight:800;color:#4361ee;letter-spacing:-0.5px;">NECTORIOUS</div><div style="font-size:10px;color:#a8adca;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;margin-top:2px;">Sdn. Bhd. (123456-A)</div><div style="font-size:11px;color:#6b7194;margin-top:6px;line-height:1.6;">Level 12, Menara Nectorious<br>Jalan Ampang, 50450 Kuala Lumpur</div></div>
+    <div style="text-align:right;"><div style="font-size:15px;font-weight:700;color:#1a1d2e;">PAYSLIP</div><div style="font-size:11px;color:#6b7194;margin-top:4px;">Period: May 2025</div><div style="font-size:11px;color:#6b7194;">Generated: 31 May 2025</div><div style="margin-top:8px;background:#eef0fd;border-radius:8px;padding:4px 12px;display:inline-block;"><span style="font-size:11px;font-weight:600;color:#4361ee;">REF: NCT-PS-2025-05-001</span></div></div>
+  </div>
+  <div style="background:#eef0f7;border-radius:12px;padding:14px 18px;margin-bottom:20px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+    <div><div style="font-size:10px;color:#a8adca;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">Employee Name</div><div style="font-size:13px;font-weight:600;color:#1a1d2e;">Ahmad Hassan</div></div>
+    <div><div style="font-size:10px;color:#a8adca;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">Employee ID</div><div style="font-size:13px;font-weight:600;color:#1a1d2e;">NCT-EMP-0014</div></div>
+    <div><div style="font-size:10px;color:#a8adca;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">Department</div><div style="font-size:13px;font-weight:600;color:#1a1d2e;">Engineering</div></div>
+    <div><div style="font-size:10px;color:#a8adca;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">Position</div><div style="font-size:13px;font-weight:600;color:#1a1d2e;">Senior Developer</div></div>
+    <div><div style="font-size:10px;color:#a8adca;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">EPF No.</div><div style="font-size:13px;font-weight:600;color:#1a1d2e;">60123456789</div></div>
+    <div><div style="font-size:10px;color:#a8adca;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">Bank Acc.</div><div style="font-size:13px;font-weight:600;color:#1a1d2e;">Maybank ···4567</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+    <div>
+      <div style="font-size:11px;font-weight:700;color:#4361ee;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">▸ Earnings</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+        <tr style="border-bottom:1px solid #e8eaf3;"><td style="padding:7px 0;color:#6b7194;">Basic Salary</td><td style="text-align:right;font-weight:600;color:#1a1d2e;font-family:'DM Mono',monospace;">RM 5,500.00</td></tr>
+        <tr style="border-bottom:1px solid #e8eaf3;"><td style="padding:7px 0;color:#6b7194;">Housing Allowance</td><td style="text-align:right;font-weight:600;color:#1a1d2e;font-family:'DM Mono',monospace;">RM 300.00</td></tr>
+        <tr style="border-bottom:1px solid #e8eaf3;"><td style="padding:7px 0;color:#6b7194;">Transport Allowance</td><td style="text-align:right;font-weight:600;color:#1a1d2e;font-family:'DM Mono',monospace;">RM 200.00</td></tr>
+        <tr><td style="padding:10px 0 4px;font-weight:700;color:#1a1d2e;">Gross Earnings</td><td style="text-align:right;font-weight:700;color:#4361ee;font-family:'DM Mono',monospace;padding-top:10px;">RM 6,000.00</td></tr>
+      </table>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">▸ Deductions</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+        <tr style="border-bottom:1px solid #e8eaf3;"><td style="padding:7px 0;color:#6b7194;">EPF Employee (11%)</td><td style="text-align:right;font-weight:600;color:#ef4444;font-family:'DM Mono',monospace;">RM 660.00</td></tr>
+        <tr style="border-bottom:1px solid #e8eaf3;"><td style="padding:7px 0;color:#6b7194;">SOCSO (Employee)</td><td style="text-align:right;font-weight:600;color:#ef4444;font-family:'DM Mono',monospace;">RM 29.75</td></tr>
+        <tr style="border-bottom:1px solid #e8eaf3;"><td style="padding:7px 0;color:#6b7194;">EIS (Employee)</td><td style="text-align:right;font-weight:600;color:#ef4444;font-family:'DM Mono',monospace;">RM 7.90</td></tr>
+        <tr style="border-bottom:1px solid #e8eaf3;"><td style="padding:7px 0;color:#6b7194;">PCB / Income Tax</td><td style="text-align:right;font-weight:600;color:#ef4444;font-family:'DM Mono',monospace;">RM 153.25</td></tr>
+        <tr><td style="padding:10px 0 4px;font-weight:700;color:#1a1d2e;">Total Deductions</td><td style="text-align:right;font-weight:700;color:#ef4444;font-family:'DM Mono',monospace;padding-top:10px;">RM 850.90</td></tr>
+      </table>
+    </div>
+  </div>
+  <div style="background:linear-gradient(135deg,#4361ee,#8b5cf6);border-radius:12px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <div style="color:rgba(255,255,255,0.85);font-size:13px;font-weight:600;">Net Pay — Maybank ···4567</div>
+    <div style="font-size:24px;font-weight:800;color:#fff;font-family:'DM Mono',monospace;">RM 5,149.10</div>
+  </div>
+  <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;font-size:11px;color:#16a34a;margin-bottom:14px;"><strong>Employer Contributions (not deducted):</strong> EPF Employer 13% = RM 780.00 · SOCSO Employer = RM 49.40 · EIS Employer = RM 7.90</div>
+  <div style="font-size:10px;color:#a8adca;text-align:center;line-height:1.7;">Computer-generated payslip — no signature required · Nectorious Sdn. Bhd. (123456-A) · hr@nectorious.com · Confidential</div>
+</div>`,
+
+memo: `<div style="font-family:'Plus Jakarta Sans',sans-serif;padding:32px 40px;background:#fff;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:3px solid #4361ee;">
+    <div><div style="font-size:22px;font-weight:800;color:#4361ee;letter-spacing:-0.5px;">NECTORIOUS</div><div style="font-size:10px;color:#a8adca;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;">Internal Communication</div></div>
+    <div style="text-align:right;font-size:11px;color:#6b7194;line-height:1.7;">Level 12, Menara Nectorious · Kuala Lumpur<br>hr@nectorious.com · +603-2123 4567</div>
+  </div>
+  <div style="background:#eef0fd;border-radius:12px;padding:16px 20px;margin-bottom:24px;">
+    <div style="font-size:15px;font-weight:800;color:#1a1d2e;letter-spacing:-0.3px;margin-bottom:12px;text-transform:uppercase;">Internal Memorandum</div>
+    <table style="width:100%;font-size:12.5px;border-collapse:collapse;">
+      <tr><td style="padding:4px 0;color:#6b7194;width:90px;font-weight:600;">TO</td><td style="color:#1a1d2e;font-weight:500;">All Staff — Nectorious Sdn. Bhd.</td></tr>
+      <tr><td style="padding:4px 0;color:#6b7194;font-weight:600;">FROM</td><td style="color:#1a1d2e;font-weight:500;">Nelson L · Human Resources Manager</td></tr>
+      <tr><td style="padding:4px 0;color:#6b7194;font-weight:600;">DATE</td><td style="color:#1a1d2e;font-weight:500;">12 May 2025</td></tr>
+      <tr><td style="padding:4px 0;color:#6b7194;font-weight:600;">SUBJECT</td><td style="color:#1a1d2e;font-weight:700;">Q2 2025 Performance Review Schedule</td></tr>
+      <tr><td style="padding:4px 0;color:#6b7194;font-weight:600;">REF</td><td style="color:#4361ee;font-weight:600;font-family:'DM Mono',monospace;">NCT-MEMO-2025-012</td></tr>
+    </table>
+  </div>
+  <div style="font-size:13px;color:#1a1d2e;line-height:1.85;">
+    <p style="margin-bottom:14px;">Dear Team,</p>
+    <p style="margin-bottom:14px;">We are pleased to announce that the <strong>Q2 2025 Performance Review</strong> cycle will commence from <strong>16 June 2025</strong>. All employees are required to complete their self-assessment forms by <strong>13 June 2025</strong> via the HRflow AI system.</p>
+    <table style="width:100%;font-size:12px;border-collapse:collapse;margin-bottom:16px;">
+      <thead><tr style="background:#eef0f7;"><th style="text-align:left;padding:8px 12px;font-size:10.5px;color:#a8adca;text-transform:uppercase;letter-spacing:0.06em;">Phase</th><th style="text-align:left;padding:8px 12px;font-size:10.5px;color:#a8adca;text-transform:uppercase;letter-spacing:0.06em;">Timeline</th><th style="text-align:left;padding:8px 12px;font-size:10.5px;color:#a8adca;text-transform:uppercase;letter-spacing:0.06em;">Action Required</th></tr></thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #e8eaf3;"><td style="padding:8px 12px;color:#1a1d2e;font-weight:500;">Self Assessment</td><td style="padding:8px 12px;color:#6b7194;">1–13 Jun 2025</td><td style="padding:8px 12px;color:#6b7194;">Complete form in HRflow AI</td></tr>
+        <tr style="border-bottom:1px solid #e8eaf3;"><td style="padding:8px 12px;color:#1a1d2e;font-weight:500;">Manager Review</td><td style="padding:8px 12px;color:#6b7194;">16–20 Jun 2025</td><td style="padding:8px 12px;color:#6b7194;">1-on-1 with Head of Dept</td></tr>
+        <tr><td style="padding:8px 12px;color:#1a1d2e;font-weight:500;">Final Results</td><td style="padding:8px 12px;color:#6b7194;">30 Jun 2025</td><td style="padding:8px 12px;color:#6b7194;">Results via email</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-bottom:24px;">For queries, contact HR at <strong>hr@nectorious.com</strong>. Thank you for your continued dedication.</p>
+    <div style="padding-top:12px;border-top:1px solid #e8eaf3;"><div style="font-weight:700;color:#1a1d2e;">Nelson L</div><div style="font-size:12px;color:#6b7194;">Human Resources Manager · Nectorious Sdn. Bhd.</div></div>
+  </div>
+</div>`,
+
+notice: `<div style="font-family:'Plus Jakarta Sans',sans-serif;padding:32px 40px;background:#fff;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:3px solid #4361ee;">
+    <div><div style="font-size:22px;font-weight:800;color:#4361ee;letter-spacing:-0.5px;">NECTORIOUS</div><div style="font-size:10px;color:#a8adca;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;">Official Staff Notice</div></div>
+    <div style="text-align:right;font-size:11px;color:#6b7194;line-height:1.7;">Level 12, Menara Nectorious · Kuala Lumpur<br>hr@nectorious.com</div>
+  </div>
+  <div style="background:linear-gradient(135deg,#4361ee,#8b5cf6);border-radius:12px;padding:18px 22px;margin-bottom:24px;text-align:center;">
+    <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">📢 Staff Notice</div>
+    <div style="font-size:18px;font-weight:800;color:#fff;letter-spacing:-0.3px;">Public Holiday — Wesak Day 2025</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.8);margin-top:6px;">Ref: NCT-NOTICE-2025-008 · Issued: 12 May 2025</div>
+  </div>
+  <div style="font-size:13px;color:#1a1d2e;line-height:1.85;">
+    <p style="margin-bottom:14px;">Dear All Staff,</p>
+    <p style="margin-bottom:14px;">We wish to inform all employees that <strong>Monday, 12 May 2025</strong> is a Public Holiday in observance of <strong>Wesak Day</strong>. The office will be closed on this date.</p>
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 18px;margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:700;color:#d97706;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">⚠ Important Notes</div>
+      <ul style="font-size:12.5px;color:#6b7194;padding-left:16px;line-height:2;">
+        <li>Employees required to work are entitled to <strong>triple pay</strong> or a replacement off day.</li>
+        <li>Inform your HOD at least <strong>3 working days</strong> in advance.</li>
+        <li>Claims must be submitted within <strong>7 days</strong> via HRflow AI.</li>
+      </ul>
+    </div>
+    <p style="margin-bottom:24px;">Operations resume on <strong>Tuesday, 13 May 2025</strong>. Wishing all who celebrate a blessed Wesak Day.</p>
+    <div style="padding-top:12px;border-top:1px solid #e8eaf3;"><div style="font-weight:700;color:#1a1d2e;">Nelson L</div><div style="font-size:12px;color:#6b7194;">Human Resources Manager · Nectorious Sdn. Bhd.</div><div style="font-size:11px;color:#a8adca;margin-top:2px;">On behalf of Management</div></div>
+  </div>
+</div>`,
+
+offer: `<div style="font-family:'Plus Jakarta Sans',sans-serif;padding:32px 40px;background:#fff;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:3px solid #4361ee;">
+    <div><div style="font-size:22px;font-weight:800;color:#4361ee;letter-spacing:-0.5px;">NECTORIOUS</div><div style="font-size:10px;color:#a8adca;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;">Letter of Employment Offer</div></div>
+    <div style="text-align:right;font-size:11px;color:#6b7194;line-height:1.7;">Level 12, Menara Nectorious · Kuala Lumpur<br>hr@nectorious.com</div>
+  </div>
+  <div style="font-size:12px;color:#6b7194;margin-bottom:4px;">12 May 2025</div>
+  <div style="font-size:12px;color:#6b7194;margin-bottom:16px;font-family:'DM Mono',monospace;">Ref: NCT-OFFER-2025-003</div>
+  <div style="margin-bottom:16px;font-size:13px;color:#1a1d2e;line-height:1.7;"><div style="font-weight:600;">Chong Kai Wei</div><div style="color:#6b7194;">No. 12, Jalan SS2/24, Petaling Jaya, Selangor</div></div>
+  <div style="font-size:13px;color:#1a1d2e;line-height:1.85;">
+    <p style="margin-bottom:14px;">Dear Kai Wei,</p>
+    <p style="margin-bottom:14px;">We are delighted to offer you the position of <strong>UI/UX Designer</strong> at Nectorious Sdn. Bhd., subject to the terms below.</p>
+    <div style="background:#eef0fd;border-radius:12px;padding:16px 20px;margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:700;color:#4361ee;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px;">Terms of Employment</div>
+      <table style="width:100%;font-size:12.5px;border-collapse:collapse;">
+        <tr style="border-bottom:1px solid #c5ccf8;"><td style="padding:7px 0;color:#6b7194;width:160px;font-weight:600;">Position</td><td style="color:#1a1d2e;font-weight:500;">UI/UX Designer</td></tr>
+        <tr style="border-bottom:1px solid #c5ccf8;"><td style="padding:7px 0;color:#6b7194;font-weight:600;">Department</td><td style="color:#1a1d2e;font-weight:500;">Engineering & Product</td></tr>
+        <tr style="border-bottom:1px solid #c5ccf8;"><td style="padding:7px 0;color:#6b7194;font-weight:600;">Commencement</td><td style="color:#1a1d2e;font-weight:500;">1 June 2025</td></tr>
+        <tr style="border-bottom:1px solid #c5ccf8;"><td style="padding:7px 0;color:#6b7194;font-weight:600;">Basic Salary</td><td style="color:#1a1d2e;font-weight:700;font-family:'DM Mono',monospace;">RM 3,800.00 / month</td></tr>
+        <tr style="border-bottom:1px solid #c5ccf8;"><td style="padding:7px 0;color:#6b7194;font-weight:600;">Probation</td><td style="color:#1a1d2e;font-weight:500;">3 months (extendable)</td></tr>
+        <tr style="border-bottom:1px solid #c5ccf8;"><td style="padding:7px 0;color:#6b7194;font-weight:600;">Working Hours</td><td style="color:#1a1d2e;font-weight:500;">Mon–Fri, 9:00 AM – 6:00 PM</td></tr>
+        <tr><td style="padding:7px 0;color:#6b7194;font-weight:600;">Annual Leave</td><td style="color:#1a1d2e;font-weight:500;">14 days (per EA 2022)</td></tr>
+      </table>
+    </div>
+    <p style="margin-bottom:14px;">Please acknowledge acceptance by signing and returning this letter by <strong>19 May 2025</strong>.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px;padding-top:16px;border-top:1px solid #e8eaf3;">
+      <div><div style="font-weight:700;color:#1a1d2e;">Nelson L</div><div style="font-size:12px;color:#6b7194;">HR Manager · Nectorious Sdn. Bhd.</div><div style="margin-top:16px;border-top:1px dashed #a8adca;padding-top:4px;font-size:11px;color:#a8adca;">Authorised Signature & Date</div></div>
+      <div><div style="font-weight:700;color:#1a1d2e;">Chong Kai Wei</div><div style="font-size:12px;color:#6b7194;">Candidate Acknowledgement</div><div style="margin-top:16px;border-top:1px dashed #a8adca;padding-top:4px;font-size:11px;color:#a8adca;">Signature & Date</div></div>
+    </div>
+  </div>
+</div>`,
+
+warning: `<div style="font-family:'Plus Jakarta Sans',sans-serif;padding:32px 40px;background:#fff;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:3px solid #ef4444;">
+    <div><div style="font-size:22px;font-weight:800;color:#4361ee;letter-spacing:-0.5px;">NECTORIOUS</div><div style="font-size:10px;color:#a8adca;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;">Confidential — Warning Letter</div></div>
+    <div style="text-align:right;font-size:11px;color:#6b7194;line-height:1.7;">Level 12, Menara Nectorious · Kuala Lumpur<br>hr@nectorious.com</div>
+  </div>
+  <div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">
+    <div style="width:36px;height:36px;border-radius:10px;background:#ef4444;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">⚠</div>
+    <div><div style="font-size:13px;font-weight:700;color:#ef4444;">FIRST WARNING LETTER</div><div style="font-size:11.5px;color:#6b7194;margin-top:1px;">Ref: NCT-WARN-2025-001 · Issued: 12 May 2025 · STRICTLY CONFIDENTIAL</div></div>
+  </div>
+  <div style="margin-bottom:16px;font-size:13px;color:#1a1d2e;line-height:1.7;"><div style="font-weight:600;">[Employee Full Name]</div><div style="color:#6b7194;">[Position] · [Department]</div><div style="color:#6b7194;font-family:'DM Mono',monospace;font-size:11px;margin-top:2px;">Employee ID: NCT-EMP-XXXX</div></div>
+  <div style="font-size:13px;color:#1a1d2e;line-height:1.85;">
+    <p style="margin-bottom:14px;">Dear [Employee Name],</p>
+    <p style="margin-bottom:14px;">This letter serves as a <strong>formal First Warning</strong> issued in accordance with the Nectorious Employee Code of Conduct and the <strong>Employment Act 1955</strong>.</p>
+    <div style="background:#eef0f7;border-radius:10px;padding:14px 18px;margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:700;color:#6b7194;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Nature of Misconduct</div>
+      <table style="width:100%;font-size:12.5px;border-collapse:collapse;">
+        <tr style="border-bottom:1px solid #e8eaf3;"><td style="padding:6px 0;color:#6b7194;width:130px;font-weight:600;">Category</td><td style="color:#1a1d2e;">[e.g. Attendance / Insubordination / Performance]</td></tr>
+        <tr style="border-bottom:1px solid #e8eaf3;"><td style="padding:6px 0;color:#6b7194;font-weight:600;">Date</td><td style="color:#1a1d2e;">[DD Month YYYY]</td></tr>
+        <tr><td style="padding:6px 0;color:#6b7194;font-weight:600;">Description</td><td style="color:#1a1d2e;">[Brief factual description of the misconduct]</td></tr>
+      </table>
+    </div>
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:700;color:#d97706;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.06em;">Escalation Framework</div>
+      <div style="display:flex;gap:8px;font-size:11.5px;">
+        <div style="flex:1;background:#4361ee;color:white;border-radius:8px;padding:8px 10px;text-align:center;font-weight:700;">1st Warning<br><span style="font-weight:400;opacity:0.85;font-size:11px;">This Letter</span></div>
+        <div style="flex:1;background:#f59e0b;color:white;border-radius:8px;padding:8px 10px;text-align:center;font-weight:700;">2nd Warning<br><span style="font-weight:400;opacity:0.85;font-size:11px;">Show Cause</span></div>
+        <div style="flex:1;background:#ef4444;color:white;border-radius:8px;padding:8px 10px;text-align:center;font-weight:700;">3rd Warning<br><span style="font-weight:400;opacity:0.85;font-size:11px;">Termination</span></div>
+      </div>
+    </div>
+    <p style="margin-bottom:14px;">You are advised to <strong>immediately improve</strong> your conduct. Any recurrence within <strong>12 months</strong> will result in further disciplinary action.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px;padding-top:16px;border-top:1px solid #e8eaf3;">
+      <div><div style="font-weight:700;color:#1a1d2e;">Nelson L</div><div style="font-size:12px;color:#6b7194;">HR Manager · Nectorious Sdn. Bhd.</div><div style="margin-top:16px;border-top:1px dashed #a8adca;padding-top:4px;font-size:11px;color:#a8adca;">HR Signature & Date</div></div>
+      <div><div style="font-weight:700;color:#1a1d2e;">[Employee Name]</div><div style="font-size:12px;color:#6b7194;">Acknowledgement of Receipt</div><div style="margin-top:16px;border-top:1px dashed #a8adca;padding-top:4px;font-size:11px;color:#a8adca;">Employee Signature & Date</div></div>
+    </div>
+  </div>
+</div>`,
+
+handbook: `<div style="font-family:'Plus Jakarta Sans',sans-serif;background:#fff;">
+  <div style="background:linear-gradient(135deg,#4361ee 0%,#8b5cf6 60%,#ec4899 100%);padding:36px 40px;text-align:center;">
+    <div style="font-size:28px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:4px;">NECTORIOUS</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:18px;">Sdn. Bhd. (123456-A)</div>
+    <div style="display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:12px;padding:12px 28px;">
+      <div style="font-size:16px;font-weight:700;color:#fff;">Employee Handbook</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:3px;">Effective 1 January 2025 · Version 3.0</div>
+    </div>
+  </div>
+  <div style="padding:28px 40px;">
+    <div style="background:#eef0f7;border-radius:12px;padding:16px 20px;margin-bottom:24px;">
+      <div style="font-size:11px;font-weight:700;color:#4361ee;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;">Table of Contents</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;font-size:12px;color:#6b7194;">
+        <div style="padding:3px 0;">1. Welcome & Our Values</div><div style="padding:3px 0;">5. Leave Entitlements</div>
+        <div style="padding:3px 0;">2. Code of Conduct</div><div style="padding:3px 0;">6. Claims & Benefits</div>
+        <div style="padding:3px 0;">3. Working Hours & Attendance</div><div style="padding:3px 0;">7. Disciplinary Policy</div>
+        <div style="padding:3px 0;">4. Dress Code</div><div style="padding:3px 0;">8. IT & Data Policy</div>
+      </div>
+    </div>
+    <div style="margin-bottom:22px;">
+      <div style="font-size:14px;font-weight:700;color:#4361ee;margin-bottom:8px;display:flex;align-items:center;gap:8px;"><span style="background:#4361ee;color:white;border-radius:6px;padding:2px 9px;font-size:11px;">1</span> Welcome & Our Values</div>
+      <div style="font-size:12.5px;color:#6b7194;line-height:1.85;margin-bottom:10px;">Welcome to <strong style="color:#1a1d2e;">Nectorious Sdn. Bhd.</strong> We are a technology-driven company dedicated to excellence, integrity, and innovation. This handbook forms part of your employment agreement.</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        <div style="background:#eef0fd;border-radius:10px;padding:10px 12px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">🎯</div><div style="font-size:11.5px;font-weight:600;color:#4361ee;">Excellence</div></div>
+        <div style="background:#f0fdf4;border-radius:10px;padding:10px 12px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">🤝</div><div style="font-size:11.5px;font-weight:600;color:#16a34a;">Integrity</div></div>
+        <div style="background:#f5f3ff;border-radius:10px;padding:10px 12px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">💡</div><div style="font-size:11.5px;font-weight:600;color:#8b5cf6;">Innovation</div></div>
+      </div>
+    </div>
+    <div style="margin-bottom:22px;">
+      <div style="font-size:14px;font-weight:700;color:#4361ee;margin-bottom:8px;display:flex;align-items:center;gap:8px;"><span style="background:#4361ee;color:white;border-radius:6px;padding:2px 9px;font-size:11px;">3</span> Working Hours & Attendance</div>
+      <div style="background:#eef0f7;border-radius:10px;overflow:hidden;">
+        <table style="width:100%;font-size:12px;border-collapse:collapse;">
+          <thead><tr style="background:#dde0ed;"><th style="text-align:left;padding:8px 14px;color:#6b7194;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;">Day</th><th style="text-align:left;padding:8px 14px;color:#6b7194;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;">Hours</th><th style="text-align:left;padding:8px 14px;color:#6b7194;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;">Notes</th></tr></thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #e8eaf3;"><td style="padding:8px 14px;font-weight:500;color:#1a1d2e;">Monday – Friday</td><td style="padding:8px 14px;color:#6b7194;font-family:'DM Mono',monospace;">9:00 AM – 6:00 PM</td><td style="padding:8px 14px;color:#6b7194;">1hr lunch (1:00–2:00 PM)</td></tr>
+            <tr style="border-bottom:1px solid #e8eaf3;"><td style="padding:8px 14px;font-weight:500;color:#1a1d2e;">Saturday</td><td style="padding:8px 14px;color:#6b7194;font-family:'DM Mono',monospace;">Off</td><td style="padding:8px 14px;color:#6b7194;">Unless required by HOD</td></tr>
+            <tr><td style="padding:8px 14px;font-weight:500;color:#1a1d2e;">WFH Policy</td><td style="padding:8px 14px;color:#6b7194;font-family:'DM Mono',monospace;">Up to 2 days/week</td><td style="padding:8px 14px;color:#6b7194;">Subject to HOD approval</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div style="margin-bottom:22px;">
+      <div style="font-size:14px;font-weight:700;color:#4361ee;margin-bottom:8px;display:flex;align-items:center;gap:8px;"><span style="background:#4361ee;color:white;border-radius:6px;padding:2px 9px;font-size:11px;">5</span> Leave Entitlements (EA 2022)</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+        <div style="background:#eef0fd;border-radius:10px;padding:10px 14px;"><div style="font-size:11.5px;font-weight:700;color:#4361ee;margin-bottom:3px;">Annual Leave</div><div style="font-size:15px;font-weight:700;color:#1a1d2e;">14 days</div><div style="font-size:11px;color:#a8adca;">After 12 months service</div></div>
+        <div style="background:#f0fdf4;border-radius:10px;padding:10px 14px;"><div style="font-size:11.5px;font-weight:700;color:#16a34a;margin-bottom:3px;">Medical Leave</div><div style="font-size:15px;font-weight:700;color:#1a1d2e;">14 days</div><div style="font-size:11px;color:#a8adca;">With valid MC</div></div>
+        <div style="background:#fef2f2;border-radius:10px;padding:10px 14px;"><div style="font-size:11.5px;font-weight:700;color:#ef4444;margin-bottom:3px;">Maternity Leave</div><div style="font-size:15px;font-weight:700;color:#1a1d2e;">98 days</div><div style="font-size:11px;color:#a8adca;">EA 2022 amendment</div></div>
+        <div style="background:#f5f3ff;border-radius:10px;padding:10px 14px;"><div style="font-size:11.5px;font-weight:700;color:#8b5cf6;margin-bottom:3px;">Paternity Leave</div><div style="font-size:15px;font-weight:700;color:#1a1d2e;">7 days</div><div style="font-size:11px;color:#a8adca;">EA 2022 amendment</div></div>
+      </div>
+    </div>
+    <div style="margin-top:20px;padding-top:14px;border-top:1px solid #e8eaf3;text-align:center;font-size:11px;color:#a8adca;line-height:1.7;">Reviewed annually · Last updated: 1 January 2025 · Version 3.0<br>Nectorious Sdn. Bhd. (123456-A) · hr@nectorious.com</div>
+  </div>
+</div>`
+};
+
+function openTpl(key) {
+  const meta = TPL_META[key];
+  document.getElementById('tpl-mtitle').textContent = meta.title;
+  document.getElementById('tpl-micon-i').className = 'ti ' + meta.icon;
+  document.getElementById('tpl-mbody').innerHTML = TPL_HTML[key];
+  document.getElementById('tpl-mbody').scrollTop = 0;
+  const ov = document.getElementById('tpl-overlay');
+  ov.style.display = 'flex';
+}
+
+function closeTpl(e) {
+  if (e && e.target !== document.getElementById('tpl-overlay')) return;
+  document.getElementById('tpl-overlay').style.display = 'none';
+}
+
+// ── CHAT ──
+function initChat() {
+  const msgs = document.getElementById('chat-msgs');
+  msgs.innerHTML = ''; history = [];
+  const badge = document.getElementById('mode-badge');
+  const lim   = document.getElementById('limit-notice');
+  if (role==='admin') {
+    badge.textContent='Admin';
+    lim.style.display='none';
+  } else {
+    badge.textContent='Employee';
+    lim.style.display='flex';
+  }
+  const greet = role==='admin'
+    ? `Hi Nelson! 👋 I'm HRflow AI with full access.\n\nI can issue payslips, draft memos & notices, answer Malaysia HR law questions, and manage leave approvals.\n\nWhat would you like to do today?`
+    : `Hi Ahmad! 👋 I'm your HR assistant.\n\nI can help with leave applications, checking your balance, KPI info, and company guidelines.\n\nFor payroll or admin matters, please contact HR directly.`;
+  addAI(greet);
+  buildChips();
+}
+
+function buildChips() {
+  const chips = role==='admin' ? ADMIN_CHIPS : EMP_CHIPS;
+  document.getElementById('prompt-chips').innerHTML = chips.map(c=>`<button class="p-chip" onclick="chipSend('${c}')">${c}</button>`).join('');
+}
+
+function chipSend(t) { addUser(t); callAI(t); }
+
+function addUser(t) {
+  const m = document.getElementById('chat-msgs');
+  const d = document.createElement('div');
+  d.className='msg msg-user';
+  d.innerHTML=`<div class="msg-bubble">${esc(t)}</div><div class="msg-time">${ts()}</div>`;
+  m.appendChild(d); m.scrollTop=m.scrollHeight;
+}
+
+function addAI(t, approval=false, detail='') {
+  const m = document.getElementById('chat-msgs');
+  const d = document.createElement('div');
+  d.className='msg msg-ai';
+  if (approval) {
+    d.innerHTML=`<div class="appr-bubble">
+      <div class="appr-title"><i class="ti ti-alert-circle"></i> Approval Required</div>
+      <div class="appr-body">${fmt(t)}</div>
+      <div class="appr-actions">
+        <button class="appr-approve" onclick="doApprove(this)"><i class="ti ti-check"></i> Approve & Send</button>
+        <button class="appr-reject" onclick="doReject(this)"><i class="ti ti-x"></i> Reject</button>
+      </div>
+    </div><div class="msg-time">${ts()}</div>`;
+  } else {
+    d.innerHTML=`<div class="msg-bubble">${fmt(t)}</div><div class="msg-time">${ts()}</div>`;
+  }
+  m.appendChild(d); m.scrollTop=m.scrollHeight;
+}
+
+function doApprove(btn) {
+  const b=btn.closest('.appr-bubble');
+  b.style.borderColor='#bbf7d0';
+  b.querySelector('.appr-title').innerHTML=`<i class="ti ti-circle-check"></i> <span style="color:#16a34a;">Approved & Sent</span>`;
+  b.querySelector('.appr-actions').innerHTML=`<span class="done-pill-g"><i class="ti ti-circle-check"></i> Sent successfully</span>`;
+}
+function doReject(btn) {
+  const b=btn.closest('.appr-bubble');
+  b.style.borderColor='#fecaca';
+  b.querySelector('.appr-title').innerHTML=`<i class="ti ti-x"></i> <span style="color:var(--red);">Rejected</span>`;
+  b.querySelector('.appr-actions').innerHTML=`<span class="done-pill-r"><i class="ti ti-x"></i> No action taken</span>`;
+}
+
+function showTyping() {
+  const m=document.getElementById('chat-msgs');
+  const d=document.createElement('div'); d.className='msg msg-ai'; d.id='typing';
+  d.innerHTML=`<div class="msg-bubble"><div class="typing-wrap"><span></span><span></span><span></span></div></div>`;
+  m.appendChild(d); m.scrollTop=m.scrollHeight;
+}
+function hideTyping() { const t=document.getElementById('typing'); if(t)t.remove(); }
+
+async function callAI(text) {
+  if (sending) return;
+  sending=true; document.getElementById('send-btn').disabled=true;
+  history.push({role:'user',content:text});
+  showTyping();
+  const needsApproval = role==='admin' && /payslip|memo|notice|letter|send|issue|email|draft|generate/i.test(text);
+  const sys = (role==='admin'?SYS_ADMIN:SYS_EMP) + (needsApproval ? '\n\nIMPORTANT: If generating/sending a document end with exactly: [NEEDS_APPROVAL: short summary of what is sent to whom]' : '');
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:history})
+    });
+    const data = await res.json();
+    hideTyping();
+    let txt = data.content?.[0]?.text || (data.error ? `Error: ${data.error.message}` : 'Something went wrong.');
+    history.push({role:'assistant',content:txt});
+    const m = txt.match(/\[NEEDS_APPROVAL:\s*(.+?)\]/s);
+    if (m) {
+      const main = txt.replace(/\[NEEDS_APPROVAL:.+?\]/s,'').trim();
+      if (main) addAI(main);
+      setTimeout(()=>addAI(m[1].trim(),true,m[1]),300);
+    } else { addAI(txt); }
+  } catch(e) { hideTyping(); addAI(`Connection error: ${e.message}\n\nPlease ensure you are running this in the Claude.ai artifact environment.`); }
+  sending=false; document.getElementById('send-btn').disabled=false;
+}
+
+function sendMsg() {
+  const el=document.getElementById('chat-input');
+  const t=el.value.trim(); if(!t||sending)return;
+  el.value=''; el.style.height='auto';
+  addUser(t); callAI(t);
+}
+function handleKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
+function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,90)+'px'; }
+function fmt(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>'); }
+function esc(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+function ts() { return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
+</script>
+</body>
+</html>
